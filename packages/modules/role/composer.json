@@ -1,0 +1,6 @@
+{
+    "name": "modules/role",
+    "description": "",
+    "minimum-stability": "dev",
+    "require": {}
+}

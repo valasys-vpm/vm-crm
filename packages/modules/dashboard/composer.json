@@ -1,0 +1,6 @@
+{
+    "name": "modules/dashboard",
+    "description": "Dashboard functionality",
+    "minimum-stability": "dev",
+    "require": {}
+}

@@ -1,0 +1,6 @@
+{
+    "name": "modules/history",
+    "description": "History Management",
+    "minimum-stability": "dev",
+    "require": {}
+}

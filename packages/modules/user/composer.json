@@ -1,0 +1,6 @@
+{
+    "name": "modules/user",
+    "description": "This is user management module for login and user related functionality",
+    "minimum-stability": "dev",
+    "require": {}
+}

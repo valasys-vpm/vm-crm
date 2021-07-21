@@ -1,0 +1,6 @@
+{
+    "name": "modules/login",
+    "description": "Login functionality",
+    "minimum-stability": "dev",
+    "require": {}
+}

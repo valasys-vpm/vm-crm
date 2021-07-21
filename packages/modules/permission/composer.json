@@ -1,0 +1,6 @@
+{
+    "name": "modules/permission",
+    "description": "Permission functionality",
+    "minimum-stability": "dev",
+    "require": {}
+}
