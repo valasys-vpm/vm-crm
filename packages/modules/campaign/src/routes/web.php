@@ -2,7 +2,7 @@
 
 
 
-Route::group(['prefix' => 'campaign', 'middleware' => ['web', 'check.auth'], 'namespace' => 'Modules\Campaign\Controllers'], function()
+Route::group(['prefix' => 'campaign', 'middleware' => ['web', 'check.auth'], 'namespace' => 'Modules\Campaign\controllers'], function()
 {
     Route::get('/list', 'CampaignController@index')->name('campaign')->middleware('check.permission');
     Route::get('/view-details/{id?}', 'CampaignController@show')->name('campaign.show')->middleware('check.permission');

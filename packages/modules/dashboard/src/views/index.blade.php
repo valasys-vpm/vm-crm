@@ -78,6 +78,10 @@
             line-height: 120px !important;
         }
 
+        canvas {
+            width: 199px !important;
+        }
+
     </style>
 @endsection
 @section('content')

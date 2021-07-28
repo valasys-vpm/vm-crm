@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['prefix' => 'role', 'middleware' => ['web', 'check.auth'], 'namespace' => 'Modules\Role\Controllers'], function()
+Route::group(['prefix' => 'role', 'middleware' => ['web', 'check.auth'], 'namespace' => 'Modules\Role\controllers'], function()
 {
     Route::get('/list', 'RoleController@index')->name('role')->middleware('check.permission');
     Route::get('/create', 'RoleController@create')->name('role.create')->middleware('check.permission');

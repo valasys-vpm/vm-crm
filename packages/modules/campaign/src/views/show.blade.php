@@ -362,9 +362,10 @@
                             <div class="row">
                                 <div class="col-md-6 form-group">
                                     <label for="specifications">Specifications</label>
-                                    <input type="file" class="form-control-file" id="specifications" name="specifications[]" multiple>
+                                    <input type="file" class="form-control-file" id="specifications" name="specifications[]" multiple required>
                                 </div>
                             </div>
+                            <button type="reset" class="btn btn-secondary btn-square float-right">Clear</button>
                             <button type="submit" class="btn btn-primary btn-square float-right">Upload</button>
                         </form>
                     </div>

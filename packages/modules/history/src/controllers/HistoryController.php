@@ -8,7 +8,7 @@ use App\Repository\History\HistoryRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Modules\History\models\History;
-use Modules\Permission\Models\Permission;
+use Modules\Permission\models\Permission;
 
 class HistoryController extends Controller
 {

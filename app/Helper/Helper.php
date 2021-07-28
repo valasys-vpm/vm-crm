@@ -6,7 +6,7 @@ namespace App\Helper;
 
 use App\SiteSetting;
 use Illuminate\Support\Facades\Auth;
-use Modules\Permission\Models\Permission;
+use Modules\Permission\models\Permission;
 use Modules\Role\models\RolePermission;
 
 class Helper

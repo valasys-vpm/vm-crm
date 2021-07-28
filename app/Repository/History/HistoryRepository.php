@@ -7,7 +7,7 @@ namespace App\Repository\History;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\History\models\History;
-use Modules\Permission\Models\Permission;
+use Modules\Permission\models\Permission;
 
 class HistoryRepository implements HistoryInterface
 {

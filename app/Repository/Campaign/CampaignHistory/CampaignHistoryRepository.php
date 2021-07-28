@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\Campaign\models\CampaignHistory;
-use Modules\Permission\Models\Permission;
+use Modules\Permission\models\Permission;
 
 class CampaignHistoryRepository implements CampaignHistoryInterface
 {

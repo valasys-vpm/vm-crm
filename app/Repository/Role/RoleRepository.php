@@ -9,9 +9,9 @@ use App\Repository\History\HistoryRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\History\controllers\HistoryController;
-use Modules\Permission\Models\Permission;
+use Modules\Permission\models\Permission;
 use Modules\Role\enum\RoleStatus;
-use Modules\Role\Models\Role;
+use Modules\Role\models\Role;
 use Modules\Role\models\RolePermission;
 use \Illuminate\Support\Facades\Request;
 

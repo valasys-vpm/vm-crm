@@ -5,7 +5,7 @@ namespace App\Repository\Permission;
 
 
 use Illuminate\Support\Facades\DB;
-use Modules\Permission\Models\Permission;
+use Modules\Permission\models\Permission;
 
 class PermissionRepository implements PermissionInterface
 {

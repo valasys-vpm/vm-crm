@@ -7,7 +7,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Hash;
-use Modules\Role\Models\Role;
+use Modules\Role\models\Role;
 use Modules\User\models\UserDetail;
 
 class User extends Authenticatable

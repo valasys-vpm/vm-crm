@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Modules\History\controllers\HistoryController;
-use Modules\Role\Models\Role;
+use Modules\Role\models\Role;
 use Modules\User\enum\UserStatus;
 use Modules\User\models\UserDetail;
 

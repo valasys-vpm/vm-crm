@@ -8,7 +8,7 @@ use App\Repository\Permission\PermissionRepository;
 use App\Repository\Role\RoleRepository;
 use Illuminate\Http\Request;
 use Modules\History\controllers\HistoryController;
-use Modules\Role\Models\Role;
+use Modules\Role\models\Role;
 
 class RoleController extends Controller
 {

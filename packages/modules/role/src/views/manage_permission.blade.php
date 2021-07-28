@@ -41,7 +41,7 @@
                                                         @csrf
                                                         <div class="row">
                                                             <div class="col-md-12">
-                                                                <button type="submit" class="btn btn-primary btn-square float-right"><i class="feather icon-save"></i> Save</button>
+                                                                <button type="submit" class="btn btn-primary btn-square float-right"><i class="feather icon-save"></i> Update</button>
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -82,7 +82,7 @@
 
                                                         <div class="row">
                                                             <div class="col-md-12">
-                                                                <button type="submit" class="btn btn-primary btn-square float-right"><i class="feather icon-save"></i> Save</button>
+                                                                <button type="submit" class="btn btn-primary btn-square float-right"><i class="feather icon-save"></i> Update</button>
                                                             </div>
                                                         </div>
                                                     </form>

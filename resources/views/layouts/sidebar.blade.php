@@ -5,7 +5,7 @@
     * Code By: alam@valasys.com, sagar@valasys.com
     */
 
-    $resultModules = \Modules\Permission\Models\Permission::select('id','name', 'route', 'icon', 'sidebar_visibility')->whereStatus(\Modules\Dashboard\enum\Status::ACTIVE)->whereSidebar_visibility(\Modules\Dashboard\enum\SidebarVisibility::VISIBLE)->whereNull('parent_id')->orderBy('priority')->get();
+    $resultModules = \Modules\Permission\models\Permission::select('id','name', 'route', 'icon', 'sidebar_visibility')->whereStatus(\Modules\Dashboard\enum\Status::ACTIVE)->whereSidebar_visibility(\Modules\Dashboard\enum\SidebarVisibility::VISIBLE)->whereNull('parent_id')->orderBy('priority')->get();
     function getModules($module)
     {
         if ($module->subPermissions->where('sidebar_visibility', '1')->count() > 0) {

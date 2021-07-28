@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['prefix' => 'user', 'middleware' => ['web', 'check.auth'], 'namespace' => 'Modules\User\Controllers'], function()
+Route::group(['prefix' => 'user', 'middleware' => ['web', 'check.auth'], 'namespace' => 'Modules\User\controllers'], function()
 {
     Route::get('/list', 'UserController@index')->name('user')->middleware('check.permission');
     Route::get('/view-details/{id}', 'UserController@show')->name('user.show')->middleware('check.permission');

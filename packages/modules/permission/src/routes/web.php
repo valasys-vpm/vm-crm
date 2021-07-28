@@ -2,7 +2,7 @@
 
 
 
-Route::group(['prefix'=> 'module', 'middleware' => ['web','check.auth'], 'namespace' => 'Modules\Permission\Controllers'], function()
+Route::group(['prefix'=> 'module', 'middleware' => ['web','check.auth'], 'namespace' => 'Modules\Permission\controllers'], function()
 {
     Route::get('/', 'PermissionController@index')->name('permission');
     Route::get('/create', 'PermissionController@create')->name('permission.create');
