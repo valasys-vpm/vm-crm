@@ -223,9 +223,79 @@
             format: 'D-MMM-YYYY',
             switchOnClick : true,
         });
+        $(function(){
 
+
+            $('body').on("input", ".only-non-zero-number", function (){
+                if(this.value < 1) {
+                    $(this).val('');
+                } else {
+                    $(this).val(parseInt(this.value));
+                }
+            });
+            $("#form-campaign-create").validate({
+                ignore: [],
+                focusInvalid: false,
+                rules: {
+                    'name' : { required : true },
+                    'start_date' : { required : true },
+                    'end_date' : { required : true },
+                    'allocation' : { required : true },
+                    'campaign_status' : { required : true },
+                    'pacing' : { required : true },
+                    'campaign_type_id' : { required : true },
+                    'campaign_filter_id' : { required : true },
+                    'country_id[]' : { required : true },
+                    'v_mail_campaign_id' : {
+                        required: false,
+                        remote : {
+                            url : '{{ route('campaign.validate.v_mail_campaign_id') }}'
+                        }
+                    }
+                },
+                messages: {
+                    'name' : { required : "Please enter campaign name" },
+                    'start_date' : { required : "Please select start date" },
+                    'end_date' : { required : "Please select end date" },
+                    'allocation' : { required : "Please enter allocation" },
+                    'campaign_status' : { required : "Please select campaign status" },
+                    'pacing' : { required : "Please select pacing" },
+                    'campaign_type_id' : { required : "Please select campaign tye" },
+                    'campaign_filter_id' : { required : "Please select campaign filter" },
+                    'country_id[]' : { required : "Please select country(s)" },
+                    'v_mail_campaign_id' : {
+                        remote : "V-Mail Campaign Id already exists"
+                    }
+                },
+                errorPlacement: function errorPlacement(error, element) {
+                    var $parent = $(element).parents('.form-group');
+
+                    // Do not duplicate errors
+                    if ($parent.find('.jquery-validation-error').length) {
+                        return;
+                    }
+
+                    $parent.append(
+                        error.addClass('jquery-validation-error small form-text invalid-feedback')
+                    );
+                },
+                highlight: function(element) {
+                    var $el = $(element);
+                    var $parent = $el.parents('.form-group');
+
+                    $el.addClass('is-invalid');
+
+                    // Select2 and Tagsinput
+                    if ($el.hasClass('select2-hidden-accessible') || $el.attr('data-role') === 'tagsinput') {
+                        $el.parent().addClass('is-invalid');
+                    }
+                },
+                unhighlight: function(element) {
+                    $(element).parents('.form-group').find('.is-invalid').removeClass('is-invalid');
+                }
+            });
+        });
         $(function () {
-            //Update regions for selected country(es)
             $("#country_id").change(function () {
                 var regionIds = [];
                 $.each($(this).children('option:selected'), function () {
@@ -237,7 +307,6 @@
                 })
             });
 
-            //Reset fields related to start_date and end_date
             $('body').on('change', '#start_date, #end_date', function () {
                 $('input[type=radio][name=pacing]').prop('checked', false);
                 $("#v-pills-tab").html('');
@@ -247,15 +316,12 @@
             });
 
             $('input[type=radio][name=pacing]').change(function() {
-
                 $("#v-pills-tab").html('');
                 $("#div_pacing_details").hide();
                 $("#v-pills-tabContent").html('');
                 $("#total-sub-allocation").html(0);
-
                 var start_date = $("#start_date").val();
                 var end_date = $("#end_date").val();
-
                 if(start_date != '' && end_date != '') {
                     var start = new Date(start_date);
                     var end = new Date(end_date);
@@ -293,10 +359,8 @@
                             start_loop_date.setMonth( start_loop_date.getMonth() + 1 );
                         }
                     } else {
-
-                        while (start <= end || start.getMonth() === end.getMonth()) {
+                        while (start <= end || (start.getMonth() === end.getMonth())) {
                             month = monthArray[start.getMonth()]+'-'+start.getFullYear();
-
                             lastDay = new Date(start.getFullYear(), start.getMonth() + 1, 0);
 
                             if(lastDay > end) { lastDay = end; }
@@ -320,10 +384,8 @@
                                 '          </div>'+
                                 '       </div>';
                             $("#v-pills-tabContent").append(html);
-
                             start.setMonth( start.getMonth() + 1 );
-
-
+                        }
                     }
 
                     $("#div_pacing_details").show();
@@ -407,77 +469,5 @@
             }
             return days;
         }
-
-        //Form Validations
-        $(function(){
-            $('body').on("input", ".only-non-zero-number", function (){
-                if(this.value < 1) {
-                    $(this).val('');
-                } else {
-                    $(this).val(parseInt(this.value));
-                }
-            });
-            $("#form-campaign-create").validate({
-                ignore: [],
-                focusInvalid: false,
-                rules: {
-                    'name' : { required : true },
-                    'start_date' : { required : true },
-                    'end_date' : { required : true },
-                    'allocation' : { required : true },
-                    'campaign_status' : { required : true },
-                    'pacing' : { required : true },
-                    'campaign_type_id' : { required : true },
-                    'campaign_filter_id' : { required : true },
-                    'country_id[]' : { required : true },
-                    'v_mail_campaign_id' : {
-                        required: false,
-                        remote : {
-                            url : '{{ route('campaign.validate.v_mail_campaign_id') }}'
-                        }
-                    }
-                },
-                messages: {
-                    'name' : { required : "Please enter campaign name" },
-                    'start_date' : { required : "Please select start date" },
-                    'end_date' : { required : "Please select end date" },
-                    'allocation' : { required : "Please enter allocation" },
-                    'campaign_status' : { required : "Please select campaign status" },
-                    'pacing' : { required : "Please select pacing" },
-                    'campaign_type_id' : { required : "Please select campaign tye" },
-                    'campaign_filter_id' : { required : "Please select campaign filter" },
-                    'country_id[]' : { required : "Please select country(s)" },
-                    'v_mail_campaign_id' : {
-                        remote : "V-Mail Campaign Id already exists"
-                    }
-                },
-                errorPlacement: function errorPlacement(error, element) {
-                    var $parent = $(element).parents('.form-group');
-
-                    // Do not duplicate errors
-                    if ($parent.find('.jquery-validation-error').length) {
-                        return;
-                    }
-
-                    $parent.append(
-                        error.addClass('jquery-validation-error small form-text invalid-feedback')
-                    );
-                },
-                highlight: function(element) {
-                    var $el = $(element);
-                    var $parent = $el.parents('.form-group');
-
-                    $el.addClass('is-invalid');
-
-                    // Select2 and Tagsinput
-                    if ($el.hasClass('select2-hidden-accessible') || $el.attr('data-role') === 'tagsinput') {
-                        $el.parent().addClass('is-invalid');
-                    }
-                },
-                unhighlight: function(element) {
-                    $(element).parents('.form-group').find('.is-invalid').removeClass('is-invalid');
-                }
-            });
-        });
     </script>
 @append
