@@ -294,7 +294,7 @@
                         }
                     } else {
 
-                        while (start <= end || start.getMonth() == end.getMonth()) {
+                        while (start <= end || start.getMonth() === end.getMonth()) {
                             month = monthArray[start.getMonth()]+'-'+start.getFullYear();
 
                             lastDay = new Date(start.getFullYear(), start.getMonth() + 1, 0);
@@ -320,7 +320,7 @@
                                 '          </div>'+
                                 '       </div>';
                             $("#v-pills-tabContent").append(html);
-                            
+
                             start.setMonth( start.getMonth() + 1 );
 
 
