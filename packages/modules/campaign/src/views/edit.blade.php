@@ -122,7 +122,7 @@
     <!-- select2 Js -->
     <script src="{{ asset('public/template/assets/plugins/select2/js/select2.full.min.js') }}"></script>
     <!-- material datetimepicker Js -->
-    <script src="http://momentjs.com/downloads/moment-with-locales.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment-with-locales.min.js"></script>
     <script src="{{ asset('public/template') }}/assets/plugins/material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
     <!-- jquery-validation Js -->
     <script src="{{ asset('public/template/assets/plugins/jquery-validation/js/jquery.validate.min.js') }}"></script>
