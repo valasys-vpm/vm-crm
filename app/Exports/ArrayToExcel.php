@@ -25,6 +25,7 @@ class ArrayToExcel implements FromArray, WithHeadings, WithEvents
     {
         $dataToExport = array();
         foreach ($this->data as $key => $row) {
+            $row['data'][11] = $row['errorMessage'];
             //dd($key, $row['data'], $row['invalidCells']);
             array_push($dataToExport, $row['data']);
         }
@@ -44,6 +45,8 @@ class ArrayToExcel implements FromArray, WithHeadings, WithEvents
             'Allocation',
             'Status',
             'Pacing',
+            'Deliver Count',
+            'Reason(s)',
         ];
 
         return $headings;
@@ -64,6 +67,7 @@ class ArrayToExcel implements FromArray, WithHeadings, WithEvents
             8 => 'I', //'Status',
             9 => 'J', //'Pacing',
             10 => 'K', //'Delivery Count',
+            11 => 'L', //'Reason(s)',
         );
 
         foreach ($this->data as $key => $row) {

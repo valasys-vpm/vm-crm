@@ -435,7 +435,8 @@ class CampaignRepository implements CampaignInterface
 
             //Validate Start Date $data[5]
             if(!empty(trim($data[5]))) {
-                $start_date = date('Y-m-d', strtotime(trim($data[5])));
+                $start_date = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[5]);
+                $start_date = date_format($start_date, 'Y-m-d');
                 if($start_date != '1970-01-01') {
                     $validatedData['start_date'] = $start_date;
                 } else {
@@ -449,7 +450,8 @@ class CampaignRepository implements CampaignInterface
 
             //Validate End Date $data[6]
             if(!empty(trim($data[6]))) {
-                $end_date = date('Y-m-d', strtotime(trim($data[6])));
+                $end_date = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[6]);
+                $end_date = date_format($end_date, 'Y-m-d');
                 if($end_date != '1970-01-01') {
                     $validatedData['end_date'] = $end_date;
                 } else {

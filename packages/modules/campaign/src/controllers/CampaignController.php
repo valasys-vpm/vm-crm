@@ -419,11 +419,15 @@ class CampaignController extends Controller
                 if($response['status'] == TRUE) {
                     array_push($validatedData, $response['validatedData']);
                 } else {
+                    $row[5] = date_format(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[5]), 'm/d/Y');
+                    $row[6] = date_format(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[6]), 'm/d/Y');
                     $tempArray['data'] = $row;
                     $tempArray['invalidCells'] = $response['invalidCells'];
+                    $tempArray['errorMessage'] = implode(',', $response['errorMessage']);
                     array_push($invalidData, $tempArray);
                 }
             }
+
         }
 
         //Insert validated data
