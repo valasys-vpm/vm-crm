@@ -90,6 +90,12 @@
                                                                     </div>
                                                                     <div class="form-group d-inline">
                                                                         <div class="radio radio-primary d-inline">
+                                                                            <input type="radio" name="pacing" id="pacing_radio_3" value="Weekly" class="pacing">
+                                                                            <label for="pacing_radio_3" class="cr">Weekly</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group d-inline">
+                                                                        <div class="radio radio-primary d-inline">
                                                                             <input type="radio" name="pacing" id="pacing_radio_2" value="Monthly" class="pacing">
                                                                             <label for="pacing_radio_2" class="cr">Monthly</label>
                                                                         </div>
@@ -328,64 +334,96 @@
                     var month = '';
                     var html = '';
 
-                    if($(this).val() == 'Daily') {
-                        var start_loop_date = new Date(start_date);
-                        while (start_loop_date <= end) {
-                            month = monthArray[start_loop_date.getMonth()]+'-'+start_loop_date.getFullYear();
-                            $("#v-pills-tab").append('<li><a class="nav-link text-left" id="v-pills-'+month+'-tab" data-toggle="pill" href="#v-pills-'+month+'" role="tab" aria-controls="v-pills-'+month+'" aria-selected="false">'+month+'</a></li>');
-                            html = '<div class="tab-pane fade" id="v-pills-'+month+'" role="tabpanel" aria-labelledby="v-pills-'+month+'-tab">'+
-                                '       <div class="row">'+
-                                '           <div class="col-md-6 form-group">'+
-                                '               <label for="days">Select Day(s)<span class="text-danger">*</span></label>'+
-                                '               <select class="form-control btn-square select2-multiple select2-multiple-days" id="'+month+'_days" name="days['+month+'][]" multiple="multiple" data-month="'+start_loop_date.getMonth()+'" data-year="'+start_loop_date.getFullYear()+'" onChange="getHtmlPacingDates(this);">'+
-                                '                   <option value="1"> Monday</option>'+
-                                '                   <option value="2"> Tuesday</option>'+
-                                '                   <option value="3"> Wednesday</option>'+
-                                '                   <option value="4"> Thursday</option>'+
-                                '                   <option value="5"> Friday</option>'+
-                                '                   <option value="6"> Saturday</option>'+
-                                '                   <option value="0"> Sunday</option>'+
-                                '               </select>'+
-                                '           </div>'+
-                                '       </div>'+
-                                '       <div class="row" id="'+month+'-dates">'+
-                                '       </div>'+
-                                '    </div>';
-                            $("#v-pills-tabContent").append(html);
-                            $(".select2-multiple-days").select2({
-                                placeholder: " -- Select Day(s) --",
-                            });
-                            start_loop_date.setDate(1);
-                            start_loop_date.setMonth( start_loop_date.getMonth() + 1 );
-                        }
-                    } else {
-                        while (start <= end || (start.getMonth() === end.getMonth())) {
-                            month = monthArray[start.getMonth()]+'-'+start.getFullYear();
-                            lastDay = new Date(start.getFullYear(), start.getMonth() + 1, 0);
-
-                            if(lastDay > end) { lastDay = end; }
-
-                            secondLast = new Date(lastDay.getFullYear(), lastDay.getMonth(), lastDay.getDate() - 1);
-                            var secondLastDate = secondLast.getFullYear()+'-'+((secondLast.getMonth()+1)<=9?('0'+(secondLast.getMonth()+1)) : (secondLast.getMonth()+1))+'-'+(secondLast.getDate()<=9 ? '0'+secondLast.getDate() : secondLast.getDate());
-
-                            while ($.inArray(secondLastDate, holidays) !== -1) {
-                                secondLast = new Date(secondLast.getFullYear(), secondLast.getMonth(), secondLast.getDate() - 1);
-                                secondLastDate = secondLast.getFullYear()+'-'+((secondLast.getMonth()+1)<=9?('0'+(secondLast.getMonth()+1)) : (secondLast.getMonth()+1))+'-'+(secondLast.getDate()<=9 ? '0'+secondLast.getDate() : secondLast.getDate());
+                    switch ($(this).val()) {
+                        case 'Daily':
+                            var start_loop_date = new Date(start_date);
+                            while (start_loop_date <= end) {
+                                month = monthArray[start_loop_date.getMonth()]+'-'+start_loop_date.getFullYear();
+                                $("#v-pills-tab").append('<li><a class="nav-link text-left" id="v-pills-'+month+'-tab" data-toggle="pill" href="#v-pills-'+month+'" role="tab" aria-controls="v-pills-'+month+'" aria-selected="false">'+month+'</a></li>');
+                                html = '<div class="tab-pane fade" id="v-pills-'+month+'" role="tabpanel" aria-labelledby="v-pills-'+month+'-tab">'+
+                                    '       <div class="row">'+
+                                    '           <div class="col-md-6 form-group">'+
+                                    '               <label for="days">Select Day(s)<span class="text-danger">*</span></label>'+
+                                    '               <select class="form-control btn-square select2-multiple select2-multiple-days" id="'+month+'_days" name="days['+month+'][]" multiple="multiple" data-month="'+start_loop_date.getMonth()+'" data-year="'+start_loop_date.getFullYear()+'" onChange="getHtmlPacingDates(this);">'+
+                                    '                   <option value="1"> Monday</option>'+
+                                    '                   <option value="2"> Tuesday</option>'+
+                                    '                   <option value="3"> Wednesday</option>'+
+                                    '                   <option value="4"> Thursday</option>'+
+                                    '                   <option value="5"> Friday</option>'+
+                                    '                   <option value="6"> Saturday</option>'+
+                                    '                   <option value="0"> Sunday</option>'+
+                                    '               </select>'+
+                                    '           </div>'+
+                                    '       </div>'+
+                                    '       <div class="row" id="'+month+'-dates">'+
+                                    '       </div>'+
+                                    '    </div>';
+                                $("#v-pills-tabContent").append(html);
+                                $(".select2-multiple-days").select2({
+                                    placeholder: " -- Select Day(s) --",
+                                });
+                                start_loop_date.setDate(1);
+                                start_loop_date.setMonth( start_loop_date.getMonth() + 1 );
                             }
+                            break;
+                        case 'Weekly':
+                            var start_loop_date = new Date(start_date);
+                            while (start_loop_date <= end) {
+                                month = monthArray[start_loop_date.getMonth()]+'-'+start_loop_date.getFullYear();
+                                $("#v-pills-tab").append('<li><a class="nav-link text-left" id="v-pills-'+month+'-tab" data-toggle="pill" href="#v-pills-'+month+'" role="tab" aria-controls="v-pills-'+month+'" aria-selected="false">'+month+'</a></li>');
+                                html = '<div class="tab-pane fade" id="v-pills-'+month+'" role="tabpanel" aria-labelledby="v-pills-'+month+'-tab">'+
+                                    '       <div class="row">'+
+                                    '           <div class="col-md-6 form-group">'+
+                                    '               <label for="days">Select Day<span class="text-danger">*</span></label>'+
+                                    '               <select class="form-control btn-square form-control-sm" id="'+month+'_day" name="day['+month+']" data-month="'+start_loop_date.getMonth()+'" data-year="'+start_loop_date.getFullYear()+'" onChange="getHtmlPacingDates(this);">'+
+                                    '                   <option value="">-- Select Day --</option>'+
+                                    '                   <option value="1"> Monday</option>'+
+                                    '                   <option value="2"> Tuesday</option>'+
+                                    '                   <option value="3"> Wednesday</option>'+
+                                    '                   <option value="4"> Thursday</option>'+
+                                    '                   <option value="5"> Friday</option>'+
+                                    '                   <option value="6"> Saturday</option>'+
+                                    '                   <option value="0"> Sunday</option>'+
+                                    '               </select>'+
+                                    '           </div>'+
+                                    '       </div>'+
+                                    '       <div class="row" id="'+month+'-dates">'+
+                                    '       </div>'+
+                                    '    </div>';
+                                $("#v-pills-tabContent").append(html);
+                                start_loop_date.setDate(1);
+                                start_loop_date.setMonth( start_loop_date.getMonth() + 1 );
+                            }
+                            break;
+                        case 'Monthly':
+                            while (start <= end || (start.getMonth() === end.getMonth())) {
+                                month = monthArray[start.getMonth()]+'-'+start.getFullYear();
+                                lastDay = new Date(start.getFullYear(), start.getMonth() + 1, 0);
 
-                            $("#v-pills-tab").append('<li><a class="nav-link text-left" id="v-pills-'+month+'-tab" data-toggle="pill" href="#v-pills-'+month+'" role="tab" aria-controls="v-pills-'+month+'" aria-selected="false">'+month+'</a></li>');
-                            html = '<div class="tab-pane fade" id="v-pills-'+month+'" role="tabpanel" aria-labelledby="v-pills-'+month+'-tab">'+
-                                '       <div class="row" id="'+month+'-dates">'+
-                                '           <div class="col-md-8">'+
-                                '               <div class="input-group mb-3">'+
-                                '                   <div class="input-group-prepend"><span class="input-group-text">'+dayArray[secondLast.getDay()]+' '+secondLast.getDate()+'-'+monthArray[secondLast.getMonth()]+'-'+secondLast.getFullYear()+'</span></div>'+
-                                '                   <input type="number" class="form-control btn-square only-non-zero-number sub-allocation" name="sub-allocation['+secondLastDate+']" placeholder="Enter Sub-Allocation">'+
-                                '               </div>'+
-                                '          </div>'+
-                                '       </div>';
-                            $("#v-pills-tabContent").append(html);
-                            start.setMonth( start.getMonth() + 1 );
-                        }
+                                if(lastDay > end) { lastDay = end; }
+
+                                secondLast = new Date(lastDay.getFullYear(), lastDay.getMonth(), lastDay.getDate() - 1);
+                                var secondLastDate = secondLast.getFullYear()+'-'+((secondLast.getMonth()+1)<=9?('0'+(secondLast.getMonth()+1)) : (secondLast.getMonth()+1))+'-'+(secondLast.getDate()<=9 ? '0'+secondLast.getDate() : secondLast.getDate());
+
+                                while ($.inArray(secondLastDate, holidays) !== -1) {
+                                    secondLast = new Date(secondLast.getFullYear(), secondLast.getMonth(), secondLast.getDate() - 1);
+                                    secondLastDate = secondLast.getFullYear()+'-'+((secondLast.getMonth()+1)<=9?('0'+(secondLast.getMonth()+1)) : (secondLast.getMonth()+1))+'-'+(secondLast.getDate()<=9 ? '0'+secondLast.getDate() : secondLast.getDate());
+                                }
+
+                                $("#v-pills-tab").append('<li><a class="nav-link text-left" id="v-pills-'+month+'-tab" data-toggle="pill" href="#v-pills-'+month+'" role="tab" aria-controls="v-pills-'+month+'" aria-selected="false">'+month+'</a></li>');
+                                html = '<div class="tab-pane fade" id="v-pills-'+month+'" role="tabpanel" aria-labelledby="v-pills-'+month+'-tab">'+
+                                    '       <div class="row" id="'+month+'-dates">'+
+                                    '           <div class="col-md-8">'+
+                                    '               <div class="input-group mb-3">'+
+                                    '                   <div class="input-group-prepend"><span class="input-group-text">'+dayArray[secondLast.getDay()]+' '+secondLast.getDate()+'-'+monthArray[secondLast.getMonth()]+'-'+secondLast.getFullYear()+'</span></div>'+
+                                    '                   <input type="number" class="form-control btn-square only-non-zero-number sub-allocation" name="sub-allocation['+secondLastDate+']" placeholder="Enter Sub-Allocation">'+
+                                    '               </div>'+
+                                    '          </div>'+
+                                    '       </div>';
+                                $("#v-pills-tabContent").append(html);
+                                start.setMonth( start.getMonth() + 1 );
+                            }
+                            break;
                     }
 
                     $("#div_pacing_details").show();
@@ -424,31 +462,44 @@
             var year = $(_this).data('year');
             var selectedDays =  $(_this).val();
 
-            var dayArr = $(_this).val();
+            var dayArr = [];
             var allDates = [];
+
+            if(Array.isArray(selectedDays)) {
+                dayArr = selectedDays;
+            } else {
+                dayArr.push(selectedDays);
+            }
 
             $.each(dayArr, function () {
                 $.merge(allDates, getDaysInMonthYear(parseInt(month), parseInt(year), parseInt(this)));
             });
 
             var html = '';
+
             $('body').find('#'+monthArray[month]+'-'+year+'-dates').html(html);
+
             $.each(allDates, function () {
+
                 var currentDate = this.getFullYear()+'-'+((this.getMonth()+1)<=9?('0'+(this.getMonth()+1)) : (this.getMonth()+1))+'-'+(this.getDate()<=9 ? '0'+this.getDate() : this.getDate());
                 var disabled = '';
                 var place_holder = 'Sub-Allocation';
                 var text_color = '';
+
                 if($.inArray(currentDate, holidays) !== -1) {
                     disabled = ' disabled ';
                     place_holder = 'Holiday';
                     text_color = 'text-danger';
                 }
+
                 html = '<div class="col-md-6">'+
                     '               <div class="input-group mb-3">'+
-                    '                   <div class="input-group-prepend"><span class="input-group-text '+text_color+'">'+dayArray[this.getDay()]+' '+this.getDate()+'-'+monthArray[this.getMonth()]+'-'+this.getFullYear()+'</span></div>'+
+                    '                   <div class="input-group' +
+                    '-prepend"><span class="input-group-text '+text_color+'">'+dayArray[this.getDay()]+' '+this.getDate()+'-'+monthArray[this.getMonth()]+'-'+this.getFullYear()+'</span></div>'+
                     '                   <input type="number" class="form-control btn-square only-non-zero-number sub-allocation" name="sub-allocation['+currentDate+']" placeholder="'+place_holder+'" '+disabled+'>'+
                     '               </div>'+
                     '          </div>';
+
                 $('body').find('#'+monthArray[month]+'-'+year+'-dates').append(html);
             });
         }
