@@ -101,11 +101,13 @@ class CampaignRepository implements CampaignInterface
             if($campaign->id) {
 
                 //Campaign Countries
-                $insertCampaignCountries = array();
-                foreach ($attributes['country_id'] as $country) {
-                    array_push($insertCampaignCountries, ['campaign_id' => $campaign->id, 'country_id' => $country]);
+                if(!empty($attributes['country_id']) && count($attributes['country_id'])) {
+                    $insertCampaignCountries = array();
+                    foreach ($attributes['country_id'] as $country) {
+                        array_push($insertCampaignCountries, ['campaign_id' => $campaign->id, 'country_id' => $country]);
+                    }
+                    CampaignCountry::insert($insertCampaignCountries);
                 }
-                CampaignCountry::insert($insertCampaignCountries);
                 //--Campaign Countries
 
                 //Campaign Specifications
@@ -133,6 +135,11 @@ class CampaignRepository implements CampaignInterface
                 $leadDetail->allocation = $attributes['allocation'];
                 $leadDetail->campaign_status = $attributes['campaign_status'];
                 $leadDetail->pacing = $attributes['pacing'];
+
+                if(isset($attributes['deliver_count']) && $attributes['deliver_count'] > 0) {
+                    $leadDetail->deliver_count = $attributes['deliver_count'];
+                }
+
                 $leadDetail->save();
                 if($leadDetail->id) {
                     //Pacing Details
@@ -410,7 +417,7 @@ class CampaignRepository implements CampaignInterface
             if(!empty(trim($data[4]))) {
                 $countries = explode(',', strtolower(trim($data[4])));
                 $country = Country::select('id')->whereIn('name', $countries)->get();
-                if(!empty($campaignFilter) && ($country->count() == count($countries))) {
+                if(($country->count() == count($countries))) {
                     $country_id = array();
                     foreach ($country as $item) {
                         array_push($country_id, $item->id);
@@ -421,8 +428,9 @@ class CampaignRepository implements CampaignInterface
                     $invalidCells[4] = 'Invalid';
                 }
             } else {
-                $errorMessage['Countries'] = 'Enter valid countries';
-                $invalidCells[4] = 'Invalid';
+                $validatedData['country_id'] = [];
+                //$errorMessage['Countries'] = 'Enter valid countries';
+                //$invalidCells[4] = 'Invalid';
             }
 
             //Validate Start Date $data[5]
@@ -498,6 +506,21 @@ class CampaignRepository implements CampaignInterface
             } else {
                 $errorMessage['Pacing'] = 'Enter valid pacing';
                 $invalidCells[9] = 'Invalid';
+            }
+
+            //Validate Delivery Count $data[10]
+            if(!empty(trim($data[10]))) {
+                $deliver_count = trim($data[10]);
+                if(is_numeric($deliver_count) && $deliver_count > 0) {
+                    $validatedData['deliver_count'] = $deliver_count;
+                } else {
+                    $errorMessage['Delivery Count'] = 'Enter valid delivery count';
+                    $invalidCells[10] = 'Invalid';
+                }
+            } else {
+                $validatedData['deliver_count'] = 0;
+                //$errorMessage['Allocation'] = 'Enter valid allocation';
+                //$invalidCells[10] = 'Invalid';
             }
 
             //Validate Sub-Allocation

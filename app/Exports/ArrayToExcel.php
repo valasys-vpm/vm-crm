@@ -63,6 +63,7 @@ class ArrayToExcel implements FromArray, WithHeadings, WithEvents
             7 => 'H', //'Allocation',
             8 => 'I', //'Status',
             9 => 'J', //'Pacing',
+            10 => 'K', //'Delivery Count',
         );
 
         foreach ($this->data as $key => $row) {
