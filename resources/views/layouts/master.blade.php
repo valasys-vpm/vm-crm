@@ -17,12 +17,19 @@
     <meta name="keywords" content="valasys, marketing, lead, generation, b2b">
     <meta name="author" content="Valasys Media" />
 
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+
     <!-- Favicon icon -->
     <link rel="icon" href="{{ asset('public/template') }}/assets/images/favicon.ico" type="image/x-icon">
     <!-- fontawesome icon -->
     <link rel="stylesheet" href="{{ asset('public/template') }}/assets/fonts/fontawesome/css/fontawesome-all.min.css">
     <!-- animation css -->
     <link rel="stylesheet" href="{{ asset('public/template') }}/assets/plugins/animation/css/animate.min.css">
+    <!-- pnotify css -->
+    <link rel="stylesheet" href="{{ asset('public/template') }}/assets/plugins/pnotify/css/pnotify.custom.min.css">
+    <!-- pnotify-custom css -->
+    <link rel="stylesheet" href="{{ asset('public/template') }}/assets/css/pages/pnotify.css">
+
     <!-- vendor css -->
     @yield('stylesheet')
 
@@ -266,6 +273,9 @@
 <!-- [ Main Content ] start -->
 @yield('content')
 <!-- [ Main Content ] end -->
+
+<div id="div-modal"></div>
+
 <script>
     var BASE_PATH = "{{ url('/') }}";
 </script>
@@ -291,6 +301,9 @@
 <script src="{{ asset('public/template') }}/assets/plugins/flot/js/jquery.flot.categories.js"></script>
 <script src="{{ asset('public/template') }}/assets/plugins/flot/js/curvedLines.js"></script>
 <script src="{{ asset('public/template') }}/assets/plugins/flot/js/jquery.flot.tooltip.min.js"></script>
+
+<!-- pnotify Js -->
+<script src="{{ asset('public/template') }}/assets/plugins/pnotify/js/pnotify.custom.min.js"></script>
 
 <!-- dashboard-custom js -->
 <script src="{{ asset('public/template') }}/assets/js/pages/dashboard-crypto.js"></script>
@@ -339,11 +352,19 @@
 </script>
 
 <script type="text/javascript">
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
     $(function () {
         $('.double-click').doubleClickToGo();
     });
 </script>
 
 @yield('javascript')
+
+<script type="text/javascript" src="{{asset('public/js/custom.js?='.time()) }}"></script>
+
 </body>
 </html>

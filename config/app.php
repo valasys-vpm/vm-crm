@@ -183,6 +183,8 @@ return [
         \Modules\History\HistoryProvider::class,
         \Modules\Campaign\CampaignProvider::class,
 
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+
     ],
 
     /*
@@ -235,6 +237,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'Helper' => App\Helper\Helper::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
     ],
 

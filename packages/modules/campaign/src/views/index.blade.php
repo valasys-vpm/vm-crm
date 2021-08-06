@@ -204,6 +204,7 @@
                                             <h5>Campaign list</h5>
                                             <div class="card-header-right">
                                                 <div class="btn-group card-option">
+                                                    <a onclick="getModal('{{ array_slice(explode('/', route('modal.campaign.import')), -1, 1)[0] }}')" data-toggle="modal"><button type="button" class="btn btn-primary btn-square btn-sm"><i class="feather icon-upload"></i>Import</button></a>&nbsp;&nbsp;
                                                     <a href="{{ url('campaign/export') }}"><button type="button" class="btn btn-primary btn-square btn-sm"><i class="feather icon-download"></i>Export</button></a>&nbsp;&nbsp;
                                                     @if(Helper::hasPermission('campaign.create'))<a href="{{ route('campaign.create') }}"><button type="button" class="btn btn-primary btn-square btn-sm"><i class="feather icon-plus"></i>New Campaign</button></a>@endif
 
@@ -300,11 +301,11 @@
         });
 
         $("#country_id").select2({ placeholder: " -- Select Country(s) --"});
+
         $("#region_id").select2({
             placeholder: " -- Select Region(s) --",
             templateSelection: function (a){return!!$(a.element).data("abbreviation")&&$(a.element).data("abbreviation")}
         });
-
 
         // [ dark-toolbar ]
         $(function (){
@@ -469,7 +470,6 @@
                     $('.double-click').doubleClickToGo();
                 },
                 "createdRow": function(row, data, dataIndex){
-                    console.log(data.lead_detail.campaign_status);
                     switch (data.lead_detail.campaign_status) {
                         case '1':
                             $(row).addClass('border-live');
@@ -505,5 +505,60 @@
                 }
             });
         }
+
+        $(function (){
+            $('body').on('submit', '#form-campaign-bulk-import', function(){
+                var form_data = new FormData();
+                var files = $('#campaign_file')[0].files;
+                var url = $('#action-campaign-bulk-import').val();
+                //console.log(url); console.log(files);
+                if(files.length > 0 ) {
+                    form_data.append('campaign_file',files[0]);
+                    $.ajax({
+                        url: url,
+                        data: form_data,
+                        contentType: false,
+                        processData: false,
+                        type: 'post',
+                        xhr: function () {
+                            var xhr = new XMLHttpRequest();
+                            xhr.onreadystatechange = function () {
+                                if (xhr.readyState == 2) {
+                                    if (xhr.status == 201) {
+                                        xhr.responseType = "text";
+                                    } else {
+                                        xhr.responseType = "blob";
+                                    }
+                                }
+                            };
+                            return xhr;
+                        },
+                        success: function(response, status, xhr) {
+                            if(xhr.status == 200) {
+                                var date = new Date();
+                                var blob = new Blob([response], {type: '' + xhr.getResponseHeader("content-type")})
+                                a = $('<a />'), url = URL.createObjectURL(blob);
+                                a.attr({
+                                    'href': url,
+                                    'download': 'InvalidCampaigns_'+date.getTime()+'.xlsx',
+                                    'text': "click"
+                                }).hide().appendTo("body")[0].click();
+                                trigger_pnofify('warning', 'Invalid Data', 'Campaigns imported with errors, please check excel file to invalid data.');
+                            } else {
+                                trigger_pnofify('success', 'Successful', response);
+                            }
+                            //console.log(response); console.log(xhr); console.log(xhr.responseType);
+                            $('body').find("#get-campaign-import-modal").modal('hide');
+                            CAMPAIGN_TABLE.ajax.reload();
+                        }
+                    });
+                } else {
+                    alert('Please select a file to upload');
+                }
+                return false;
+
+            });
+        });
+
     </script>
 @append

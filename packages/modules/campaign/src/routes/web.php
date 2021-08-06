@@ -60,6 +60,10 @@ Route::group(['prefix' => 'campaign', 'middleware' => ['web', 'check.auth'], 'na
     //Dummy Routes
     Route::any('/view_sub_allocations', function (){ return redirect()->route('campaign');})->name('campaign.view_sub_allocations');
 
+    //Ajax Calls
+    Route::any('/campaign-bulk-import', 'CampaignController@campaignBulkImport')->name('campaign.bulk.import');
+
+
 });
 
 

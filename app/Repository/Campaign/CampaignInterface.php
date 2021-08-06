@@ -12,4 +12,6 @@ interface CampaignInterface
     public function update($id, $attributes = []);
     public function updateSpecification($id, $attributes = []);
     public function destroy($id);
+
+    public function validateCampaignData($data = []);
 }

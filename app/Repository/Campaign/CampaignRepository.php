@@ -4,6 +4,7 @@
 namespace App\Repository\Campaign;
 
 
+use App\Country;
 use App\Helper\Helper;
 use App\Holiday;
 use App\Jobs\SendMail;
@@ -11,6 +12,8 @@ use App\Repository\Campaign\CampaignHistory\CampaignHistoryRepository;
 use App\Repository\History\HistoryRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Modules\Campaign\enum\CampaignStatus;
+use Modules\Campaign\enum\PacingType;
 use Modules\Campaign\models\Campaign;
 use Modules\Campaign\models\CampaignCountry;
 use Modules\Campaign\models\CampaignFilter;
@@ -93,6 +96,7 @@ class CampaignRepository implements CampaignInterface
             $campaign->campaign_type_id = $attributes['campaign_type_id'];
             $campaign->campaign_filter_id = $attributes['campaign_filter_id'];
             $campaign->note = $attributes['note'];
+
             $campaign->save();
             if($campaign->id) {
 
@@ -167,6 +171,7 @@ class CampaignRepository implements CampaignInterface
             }
         } catch (\Exception $exception) {
             DB::rollBack();
+            dd($exception->getMessage());
             $response = array('status' => FALSE, 'message' => 'Something went wrong, please try again.');
         }
         return $response;
@@ -348,5 +353,173 @@ class CampaignRepository implements CampaignInterface
         // TODO: Implement destroy() method.
     }
 
+    public function validateCampaignData($data = [])
+    {
+        $validatedData = array();
+        $errorMessage = array();
+        $response = array('status' => FALSE, 'message' => 'Something went wrong, please try again.');
+        $invalidCells = array();
+        try {
+            //Validate Campaign Name $data[0]
+            if(!empty(trim($data[0]))) {
+                $campaign = Campaign::whereName(trim($data[0]))->count();
+                if($campaign == 0) {
+                    $validatedData['name'] = $data[0];
+                } else {
+                    $errorMessage['Campaign Name'] = 'Campaign name already exists';
+                    $invalidCells[0] = 'Invalid';
+                }
+            } else {
+                $errorMessage['Campaign Name'] = 'Enter valid campaign name';
+                $invalidCells[0] = 'Invalid';
+            }
+
+            //Validate V-Mail Campaign ID $data[1]
+            $validatedData['v_mail_campaign_id'] = $data[1];
+
+            //Validate Campaign Type $data[2]
+            if(!empty(trim($data[2]))) {
+                $campaignType = CampaignType::whereName(trim($data[2]))->first();
+                if(!empty($campaignType)) {
+                    $validatedData['campaign_type_id'] = $campaignType->id;
+                } else {
+                    $errorMessage['Campaign Type'] = 'Enter valid campaign type';
+                    $invalidCells[2] = 'Invalid';
+                }
+            } else {
+                $errorMessage['Campaign Type'] = 'Enter valid campaign type';
+                $invalidCells[2] = 'Invalid';
+            }
+
+
+            //Validate Campaign Filter $data[3]
+            if(!empty(trim($data[3]))) {
+                $campaignFilter = CampaignFilter::whereName(trim($data[3]))->first();
+                if(!empty($campaignFilter)) {
+                    $validatedData['campaign_filter_id'] = $campaignFilter->id;
+                } else {
+                    $errorMessage['Campaign Filter'] = 'Enter valid campaign filter';
+                    $invalidCells[3] = 'Invalid';
+                }
+            } else {
+                $errorMessage['Campaign Filter'] = 'Enter valid campaign filter';
+                $invalidCells[3] = 'Invalid';
+            }
+
+            //Validate Country(s) $data[4]
+            if(!empty(trim($data[4]))) {
+                $countries = explode(',', strtolower(trim($data[4])));
+                $country = Country::select('id')->whereIn('name', $countries)->get();
+                if(!empty($campaignFilter) && ($country->count() == count($countries))) {
+                    $country_id = array();
+                    foreach ($country as $item) {
+                        array_push($country_id, $item->id);
+                    }
+                    $validatedData['country_id'] = $country_id;
+                } else {
+                    $errorMessage['Countries'] = 'Enter valid countries';
+                    $invalidCells[4] = 'Invalid';
+                }
+            } else {
+                $errorMessage['Countries'] = 'Enter valid countries';
+                $invalidCells[4] = 'Invalid';
+            }
+
+            //Validate Start Date $data[5]
+            if(!empty(trim($data[5]))) {
+                $start_date = date('Y-m-d', strtotime(trim($data[5])));
+                if($start_date != '1970-01-01') {
+                    $validatedData['start_date'] = $start_date;
+                } else {
+                    $errorMessage['Start Date'] = 'Enter valid start date';
+                    $invalidCells[5] = 'Invalid';
+                }
+            } else {
+                $errorMessage['Start Date'] = 'Enter valid start date';
+                $invalidCells[5] = 'Invalid';
+            }
+
+            //Validate End Date $data[6]
+            if(!empty(trim($data[6]))) {
+                $end_date = date('Y-m-d', strtotime(trim($data[6])));
+                if($end_date != '1970-01-01') {
+                    $validatedData['end_date'] = $end_date;
+                } else {
+                    $errorMessage['End Date'] = 'Enter valid end date';
+                    $invalidCells[6] = 'Invalid';
+                }
+            } else {
+                $errorMessage['End Date'] = 'Enter valid end date';
+                $invalidCells[6] = 'Invalid';
+            }
+
+            //Check Start Date & End Date
+            if($start_date > $end_date) {
+                $errorMessage['Start Date & End Date'] = 'Enter valid start date & end date';
+            }
+
+            //Validate Allocation $data[7]
+            if(!empty(trim($data[7]))) {
+                $allocation = trim($data[7]);
+                if(is_numeric($allocation) && $allocation > 0) {
+                    $validatedData['allocation'] = $allocation;
+                } else {
+                    $errorMessage['Allocation'] = 'Enter valid allocation';
+                    $invalidCells[7] = 'Invalid';
+                }
+            } else {
+                $errorMessage['Allocation'] = 'Enter valid allocation';
+                $invalidCells[7] = 'Invalid';
+            }
+
+            //Validate Status $data[8]
+            if(!empty(trim($data[8]))) {
+                $campaignStatus = CampaignStatus::CAMPAIGN_STATUS;
+                if(in_array(ucfirst(trim($data[8])), $campaignStatus)) {
+                    $validatedData['campaign_status'] = array_search(ucfirst(trim($data[8])),$campaignStatus);
+                } else {
+                    $errorMessage['Status'] = 'Enter valid status';
+                    $invalidCells[8] = 'Invalid';
+                }
+            } else {
+                $errorMessage['Status'] = 'Enter valid status';
+                $invalidCells[8] = 'Invalid';
+            }
+
+            //Validate Pacing $data[9]
+            if(!empty(trim($data[9]))) {
+                $pacings = PacingType::PACING_TYPE;
+                if(in_array(ucfirst(trim($data[9])), $pacings)) {
+                    $validatedData['pacing'] = ucfirst(trim($data[9]));
+                } else {
+                    $errorMessage['Pacing'] = 'Enter valid pacing';
+                    $invalidCells[9] = 'Invalid';
+                }
+            } else {
+                $errorMessage['Pacing'] = 'Enter valid pacing';
+                $invalidCells[9] = 'Invalid';
+            }
+
+            //Validate Sub-Allocation
+            $validatedData['note'] = '';
+            $validatedData['sub-allocation'] = [];
+
+            if(empty($errorMessage)) {
+                $response = array('status' => TRUE, 'validatedData' => $validatedData);
+            } else {
+                throw new \Exception('Something went wrong, please try again.', 1);
+            }
+
+        } catch (\Exception $exception) {
+            //dd($exception->getMessage());
+            $response = array(
+                'status' => FALSE,
+                'errorMessage' => $errorMessage,
+                'invalidCells' => $invalidCells
+                );
+        }
+
+        return $response;
+    }
 
 }

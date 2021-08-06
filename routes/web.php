@@ -22,3 +22,5 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/access-denied', 'HomeController@accessDenied')->name('access.denied');
 
 Route::get('/test-email', 'HomeController@testEmail');
+
+include('extra/modal_routes.php');

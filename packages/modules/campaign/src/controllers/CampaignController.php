@@ -4,6 +4,7 @@
 namespace Modules\Campaign\controllers;
 
 use App\Country;
+use App\Exports\ArrayToExcel;
 use App\Exports\CampaignExport;
 use App\Holiday;
 use App\Http\Controllers\Controller;
@@ -16,12 +17,11 @@ use App\Repository\CampaignFilter\CampaignFilterRepository;
 use App\Repository\CampaignType\CampaignTypeRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Maatwebsite\Excel\Facades\Excel;
+
 use Modules\Campaign\models\Campaign;
-use Modules\Campaign\models\CampaignSpecification;
-use Modules\Campaign\models\LeadDetail;
 use Modules\Campaign\models\PacingDetail;
+
+use Excel;
 
 class CampaignController extends Controller
 {
@@ -316,8 +316,6 @@ class CampaignController extends Controller
             }
             //--Filters
 
-
-
         }
 
         $totalRecords = $totalRecordswithFilter = $records->count();
@@ -404,5 +402,44 @@ class CampaignController extends Controller
         }
 
         return Excel::download(new CampaignExport($campaignId), $filename);
+    }
+
+    public function campaignBulkImport(Request $request)
+    {
+        $attributes = $request->all();
+
+        $excelData = Excel::toArray('', $request->file('campaign_file'));
+
+        $validatedData = array();
+        $invalidData = array();
+        $errorMessages = array();
+        foreach ($excelData[0] as $key => $row) {
+            if($key != 0) {
+                $response = $this->campaignRepository->validateCampaignData($row);
+                if($response['status'] == TRUE) {
+                    array_push($validatedData, $response['validatedData']);
+                } else {
+                    $tempArray['data'] = $row;
+                    $tempArray['invalidCells'] = $response['invalidCells'];
+                    array_push($invalidData, $tempArray);
+                }
+            }
+        }
+
+        //Insert validated data
+        $importedCampaigns = 0;
+        foreach ($validatedData as $index => $attributes) {
+            $response = $this->campaignRepository->store($attributes);
+            $importedCampaigns++;
+        }
+
+        if(!empty($invalidData)) {
+            //Generate CSV
+            return  Excel::download(new ArrayToExcel($invalidData), 'InvalidCampaigns'. time() . ".xlsx");
+            //return response()->json(['status' => false, 'response' => $importedCampaigns.' campaigns imported successfully', 'blob' => $file]);
+        } else {
+            return response('All Campaigns imported successfully', 201);
+        }
+
     }
 }
