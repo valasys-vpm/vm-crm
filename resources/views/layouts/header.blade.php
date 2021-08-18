@@ -13,7 +13,7 @@
     </a>
     <div class="collapse navbar-collapse">
         <ul class="navbar-nav mr-auto">
-            <li><a href="#!" class="full-screen" onclick="javascript:toggleFullScreen()"><i class="feather icon-maximize"></i></a></li>
+<!--            <li><a href="#!" class="full-screen" onclick="javascript:toggleFullScreen()"><i class="feather icon-maximize"></i></a></li>-->
         </ul>
         <ul class="navbar-nav ml-auto">
             <li>

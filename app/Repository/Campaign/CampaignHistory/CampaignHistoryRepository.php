@@ -36,6 +36,10 @@ class CampaignHistoryRepository implements CampaignHistoryInterface
             $query->orderBy($filters['order_by_desc'], 'DESC');
         }
 
+        if(!empty($campaign_id)) {
+            $query->whereCampaignId($campaign_id);
+        }
+
         $query->with('user.userDetail');
         if(isset($filters['skip']) && !empty($filters['skip'])) {
             $query->limit($limit)->skip($filters['skip'] * $limit);

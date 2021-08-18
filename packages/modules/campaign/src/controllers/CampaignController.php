@@ -18,10 +18,14 @@ use App\Repository\CampaignType\CampaignTypeRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Modules\Campaign\models\Campaign;
+use Modules\Campaign\models\CampaignSpecification;
 use Modules\Campaign\models\PacingDetail;
 
 use Excel;
+use Zip;
 
 class CampaignController extends Controller
 {
@@ -407,6 +411,12 @@ class CampaignController extends Controller
     public function campaignBulkImport(Request $request)
     {
         $attributes = $request->all();
+        $fileList = array();
+        if($request->hasFile('specification_file')) {
+            $zip = Zip::open($request->file('specification_file'));
+            $fileList = $zip->listFiles();
+        }
+
 
         $excelData = Excel::toArray('', $request->file('campaign_file'));
 
@@ -433,7 +443,27 @@ class CampaignController extends Controller
         //Insert validated data
         $importedCampaigns = 0;
         foreach ($validatedData as $index => $attributes) {
+
             $response = $this->campaignRepository->store($attributes);
+
+            if($response['status'] == TRUE) {
+                if(!empty($fileList)) {
+                    $campaign_path = 'public/storage/campaigns/'.$response['campaign_id'].'/';
+                    $unzips_path = 'public/storage/unzips';
+                    foreach ($fileList as $filename) {
+                        $exploded = explode('/', $filename);
+                        if($attributes['name'] == $exploded[0]) {
+                            $zip->extract($unzips_path, $filename);
+                            if(!File::exists($campaign_path)) {
+                                File::makeDirectory($campaign_path, $mode = 0777, true, true);
+                            }
+                            File::move($unzips_path.'/'.$exploded[0].'/'.$exploded[1], $campaign_path.$exploded[1]);
+                            File::deleteDirectory($unzips_path.'/'.$exploded[0]);
+                            CampaignSpecification::insert([['campaign_id' => $response['id'], 'file_name' => explode('/', $filename)[1]]]);
+                        }
+                    }
+                }
+            }
             $importedCampaigns++;
         }
 

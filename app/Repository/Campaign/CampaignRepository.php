@@ -57,12 +57,17 @@ class CampaignRepository implements CampaignInterface
     public function getAll($filters = [])
     {
         $query = $this->campaign->whereNotNull('id');
+
         if(isset($filters['order_by']) && $filters['order_by']) {
             $query->orderBy($filters['order_by']);
         }
+
         if(isset($filters['status']) && $filters['status']) {
             $query->where('status', $filters['status']);
         }
+
+
+
         return $query->get();
     }
 
@@ -157,7 +162,7 @@ class CampaignRepository implements CampaignInterface
                     PacingDetail::insert($insertPacingDetails);
                     //--Pacing Details
                     DB::commit();
-                    $response = array('status' => TRUE, 'message' => 'Campaign created successfully');
+                    $response = array('status' => TRUE, 'message' => 'Campaign created successfully', 'campaign_id' => $campaign->campaign_id, 'id' => $campaign->id);
                 } else {
                     //throw new \Exception('Something went wrong, please try again.', 1);
                 }
@@ -545,6 +550,8 @@ class CampaignRepository implements CampaignInterface
         }
 
         return $response;
+
+
     }
 
 }

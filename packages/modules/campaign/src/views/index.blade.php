@@ -365,7 +365,7 @@
             }
 
             CAMPAIGN_TABLE = $('#table-campaigns').DataTable({
-                "lengthMenu": [ [10, 25, 50, 100, 250], [10, 25, 50, 100, 250] ],
+                "lengthMenu": [ [500,400,300,200,100], [500,400,300,200,100] ],
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
@@ -510,10 +510,12 @@
             $('body').on('submit', '#form-campaign-bulk-import', function(){
                 var form_data = new FormData();
                 var files = $('#campaign_file')[0].files;
+                var specification_files = $('#specification_file')[0].files;
                 var url = $('#action-campaign-bulk-import').val();
                 //console.log(url); console.log(files);
                 if(files.length > 0 ) {
                     form_data.append('campaign_file',files[0]);
+                    form_data.append('specification_file',specification_files[0]);
                     $.ajax({
                         url: url,
                         data: form_data,

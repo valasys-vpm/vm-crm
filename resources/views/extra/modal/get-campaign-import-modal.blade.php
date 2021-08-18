@@ -12,7 +12,18 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <input type="file" id="campaign_file" name="campaign_file" required>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Select excel file <span class="text-danger">*</span></label>
+                            <input type="file" class="form-control" id="campaign_file" name="campaign_file" required>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <label>Select zip file (specification)</label>
+                            <input type="file" class="form-control" id="specification_file" name="specification_file">
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

@@ -183,7 +183,9 @@ return [
         \Modules\History\HistoryProvider::class,
         \Modules\Campaign\CampaignProvider::class,
 
+        //External Plugins/Packages
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        ZanySoft\Zip\ZipServiceProvider::class,
 
     ],
 
@@ -238,6 +240,7 @@ return [
 
         'Helper' => App\Helper\Helper::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Zip' => ZanySoft\Zip\ZipFacade::class,
 
     ],
 

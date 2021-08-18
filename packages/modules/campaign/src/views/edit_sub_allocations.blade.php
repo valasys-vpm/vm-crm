@@ -36,6 +36,12 @@
                                     </div>
                                     <div class="form-group d-inline">
                                         <div class="radio radio-primary d-inline">
+                                            <input type="radio" name="pacing" id="pacing_radio_3" value="Weekly" class="pacing" @if($resultLeadDetail->pacing == 'Weekly') checked @endif disabled>
+                                            <label for="pacing_radio_3" class="cr">Weekly</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group d-inline">
+                                        <div class="radio radio-primary d-inline">
                                             <input type="radio" name="pacing" id="pacing_radio_2" value="Monthly" class="pacing" @if($resultLeadDetail->pacing == 'Monthly') checked @endif disabled>
                                             <label for="pacing_radio_2" class="cr">Monthly</label>
                                         </div>

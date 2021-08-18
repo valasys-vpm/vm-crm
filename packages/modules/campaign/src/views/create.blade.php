@@ -494,8 +494,7 @@
 
                 html = '<div class="col-md-6">'+
                     '               <div class="input-group mb-3">'+
-                    '                   <div class="input-group' +
-                    '-prepend"><span class="input-group-text '+text_color+'">'+dayArray[this.getDay()]+' '+this.getDate()+'-'+monthArray[this.getMonth()]+'-'+this.getFullYear()+'</span></div>'+
+                    '                   <div class="input-group-prepend"><span class="input-group-text '+text_color+'">'+dayArray[this.getDay()]+' '+this.getDate()+'-'+monthArray[this.getMonth()]+'-'+this.getFullYear()+'</span></div>'+
                     '                   <input type="number" class="form-control btn-square only-non-zero-number sub-allocation" name="sub-allocation['+currentDate+']" placeholder="'+place_holder+'" '+disabled+'>'+
                     '               </div>'+
                     '          </div>';
