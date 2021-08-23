@@ -19,11 +19,11 @@
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <label for="start_date">Start Date: {{ date('d-M-Y', strtotime($resultLeadDetail->start_date)) }}</label>
-                                <input type="hidden" id="txt_start_date" value="{{ date('d/M/Y', strtotime($resultLeadDetail->start_date)) }}">
+                                <input type="hidden" id="start_date" value="{{ date('d/M/Y', strtotime($resultLeadDetail->start_date)) }}">
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for="end_date">End Date: {{ date('d-M-Y', strtotime($resultLeadDetail->end_date)) }}</label>
-                                <input type="hidden" id="txt_end_date" value="{{ date('d/M/Y', strtotime($resultLeadDetail->end_date)) }}">
+                                <input type="hidden" id="end_date" value="{{ date('d/M/Y', strtotime($resultLeadDetail->end_date)) }}">
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for="pacing">Pacing</label>
@@ -69,27 +69,64 @@
 
                                         @forelse($monthList as $key => $month)
                                             <div class="tab-pane fade @if($key == 0) show active @endif" id="v-pills-{{$month['name']}}" role="tabpanel" aria-labelledby="v-pills-{{$month['name']}}-tab">
-                                                @if($resultLeadDetail->pacing == 'Daily')
+                                                @switch($resultLeadDetail->pacing)
+                                                    @case('Daily')
+                                                        @if(isset($month['days']) && !empty($month['days']))
+                                                            <div class="row">
+                                                                <div class="col-md-6 form-group">
+                                                                    <label for="days">Select Day(s)<span class="text-danger">*</span></label>
+                                                                    <select class="form-control btn-square select2-multiple select2-multiple-days" id="{{$month['name']}}_days" name="days[{{$month['name']}}][]" multiple="multiple" data-month="{{$month['month']-1}}" data-year="{{$month['year']}}" onChange="getHtmlPacingDates(this);">
+                                                                        <option value="1" @if(in_array('1', $month['days'])) selected @endif> Monday</option>
+                                                                        <option value="2" @if(in_array('2', $month['days'])) selected @endif> Tuesday</option>
+                                                                        <option value="3" @if(in_array('3', $month['days'])) selected @endif> Wednesday</option>
+                                                                        <option value="4" @if(in_array('4', $month['days'])) selected @endif> Thursday</option>
+                                                                        <option value="5" @if(in_array('5', $month['days'])) selected @endif> Friday</option>
+                                                                        <option value="6" @if(in_array('6', $month['days'])) selected @endif> Saturday</option>
+                                                                        <option value="0" @if(in_array('0', $month['days'])) selected @endif> Sunday</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        @else
+                                                            <div class="row">
+                                                                <div class="col-md-6 form-group">
+                                                                    <label for="days">Select Day(s)<span class="text-danger">*</span></label>
+                                                                    <select class="form-control btn-square select2-multiple select2-multiple-days" id="{{$month['name']}}_days" name="days[{{$month['name']}}][]" multiple="multiple" data-month="{{$month['month']-1}}" data-year="{{$month['year']}}" onChange="getHtmlPacingDates(this);">
+                                                                        <option value="1"> Monday</option>
+                                                                        <option value="2"> Tuesday</option>
+                                                                        <option value="3"> Wednesday</option>
+                                                                        <option value="4"> Thursday</option>
+                                                                        <option value="5"> Friday</option>
+                                                                        <option value="6"> Saturday</option>
+                                                                        <option value="0"> Sunday</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    @break
+
+                                                    @case('Weekly')
                                                     @if(isset($month['days']) && !empty($month['days']))
-                                                    <div class="row">
-                                                        <div class="col-md-6 form-group">
-                                                            <label for="days">Select Day(s)<span class="text-danger">*</span></label>
-                                                            <select class="form-control btn-square select2-multiple select2-multiple-days" id="{{$month['name']}}_days" name="days[{{$month['name']}}][]" multiple="multiple" data-month="{{$month['month']-1}}" data-year="{{$month['year']}}" onChange="getHtmlPacingDates(this);">
-                                                                <option value="1" @if(in_array('1', $month['days'])) selected @endif> Monday</option>
-                                                                <option value="2" @if(in_array('2', $month['days'])) selected @endif> Tuesday</option>
-                                                                <option value="3" @if(in_array('3', $month['days'])) selected @endif> Wednesday</option>
-                                                                <option value="4" @if(in_array('4', $month['days'])) selected @endif> Thursday</option>
-                                                                <option value="5" @if(in_array('5', $month['days'])) selected @endif> Friday</option>
-                                                                <option value="6" @if(in_array('6', $month['days'])) selected @endif> Saturday</option>
-                                                                <option value="0" @if(in_array('0', $month['days'])) selected @endif> Sunday</option>
-                                                            </select>
+                                                        <div class="row">
+                                                            <div class="col-md-6 form-group">
+                                                                <label for="days">Select Day(s)<span class="text-danger">*</span></label>
+                                                                <select class="form-control btn-square form-control-sm" id="{{$month['name']}}_day" name="day[{{$month['name']}}]" data-month="{{$month['month']-1}}" data-year="{{$month['year']}}" onChange="getHtmlPacingDates(this);">
+                                                                    <option value="">-- Select Day --</option>
+                                                                    <option value="1" @if(in_array('1', $month['days'])) selected @endif> Monday</option>
+                                                                    <option value="2" @if(in_array('2', $month['days'])) selected @endif> Tuesday</option>
+                                                                    <option value="3" @if(in_array('3', $month['days'])) selected @endif> Wednesday</option>
+                                                                    <option value="4" @if(in_array('4', $month['days'])) selected @endif> Thursday</option>
+                                                                    <option value="5" @if(in_array('5', $month['days'])) selected @endif> Friday</option>
+                                                                    <option value="6" @if(in_array('6', $month['days'])) selected @endif> Saturday</option>
+                                                                    <option value="0" @if(in_array('0', $month['days'])) selected @endif> Sunday</option>
+                                                                </select>
+                                                            </div>
                                                         </div>
-                                                    </div>
                                                     @else
                                                         <div class="row">
                                                             <div class="col-md-6 form-group">
                                                                 <label for="days">Select Day(s)<span class="text-danger">*</span></label>
-                                                                <select class="form-control btn-square select2-multiple select2-multiple-days" id="{{$month['name']}}_days" name="days[{{$month['name']}}][]" multiple="multiple" data-month="{{$month['month']-1}}" data-year="{{$month['year']}}" onChange="getHtmlPacingDates(this);">
+                                                                <select class="form-control btn-square form-control-sm" id="{{$month['name']}}_day" name="day[{{$month['name']}}]" data-month="{{$month['month']-1}}" data-year="{{$month['year']}}" onChange="getHtmlPacingDates(this);">
+                                                                    <option value="">-- Select Day --</option>
                                                                     <option value="1"> Monday</option>
                                                                     <option value="2"> Tuesday</option>
                                                                     <option value="3"> Wednesday</option>
@@ -101,7 +138,9 @@
                                                             </div>
                                                         </div>
                                                     @endif
-                                                @endif
+                                                    @break
+                                                @endswitch
+
                                                 <div class="row" id="{{$month['name']}}-dates">
                                                     @forelse($month['pacing_details'] as $key => $pacingDetail)
                                                     <div class="col-md-6">

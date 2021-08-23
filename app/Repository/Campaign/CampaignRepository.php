@@ -147,20 +147,23 @@ class CampaignRepository implements CampaignInterface
 
                 $leadDetail->save();
                 if($leadDetail->id) {
-                    //Pacing Details
-                    $insertPacingDetails = array();
 
-                    foreach ($attributes['sub-allocation'] as $date => $sub_allocation) {
-                        array_push($insertPacingDetails, [
-                            'campaign_id' => $campaign->id,
-                            'lead_detail_id' => $leadDetail->id,
-                            'sub_allocation' => $sub_allocation,
-                            'date' => $date,
-                            'day' => date('w', strtotime($date))
-                        ]);
+                    if(isset($attributes['sub-allocation']) && !empty($attributes['sub-allocation'])) {
+                        //Pacing Details
+                        $insertPacingDetails = array();
+                        foreach ($attributes['sub-allocation'] as $date => $sub_allocation) {
+                            array_push($insertPacingDetails, [
+                                'campaign_id' => $campaign->id,
+                                'lead_detail_id' => $leadDetail->id,
+                                'sub_allocation' => $sub_allocation,
+                                'date' => $date,
+                                'day' => date('w', strtotime($date))
+                            ]);
+                        }
+                        PacingDetail::insert($insertPacingDetails);
+                        //--Pacing Details
                     }
-                    PacingDetail::insert($insertPacingDetails);
-                    //--Pacing Details
+
                     DB::commit();
                     $response = array('status' => TRUE, 'message' => 'Campaign created successfully', 'campaign_id' => $campaign->campaign_id, 'id' => $campaign->id);
                 } else {

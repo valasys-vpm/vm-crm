@@ -3,6 +3,14 @@
  *  Copyright 2021
  */
 
+$('body').on("input", ".only-non-zero-number", function (){
+    if(this.value < 1) {
+        $(this).val('');
+    } else {
+        $(this).val(parseInt(this.value));
+    }
+});
+
 $(document).ready(function () {
     callFun();
 });
