@@ -111,15 +111,26 @@ class CampaignAssignController
             $records->whereHas('users', function ($campaignUsers) use ($filters){
                 $campaignUsers->whereUserId(Auth::id());
             });
+        } else {
+            $records->with(['users' => function($users) use ($filters){
+                //$users->whereAssignedBy(Auth::id());
+                $users->whereIn('assigned_by', [Auth::id(), '1', '11', '12']);
+            }]);
+            $records->whereHas('users', function ($campaignUsers) use ($filters){
+                $campaignUsers->whereIn('assigned_by', [Auth::id(), '1', '11', '12']);
+            });
         }
 
-        if(Auth::user()->role_id == '34') {
+        if(Auth::user()->role_id == '34' || Auth::user()->role_id == '31') {
             $records->with(['user' => function($users) use ($filters){
                 $users->whereUserId(Auth::id());
             }]);
+            $records->whereHas('user', function ($campaignUsers) use ($filters){
+                $campaignUsers->whereUserId(Auth::id());
+            });
         }
 
-        $records = $records->with('countries.country.region');
+        //$records = $records->with('countries.country.region');
 
         $search_arr = $request->get('search');
         $searchValue = $search_arr['value']; // Search value

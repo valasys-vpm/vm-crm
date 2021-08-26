@@ -64,6 +64,7 @@ class CampaignAssignRepository implements CampaignAssignInterface
             });
         } else {
             $query->whereNotIn('id', ['1',Auth::id()]);
+            $query->whereNotIn('role_id', ['30', '32', '33']);
         }
 
 

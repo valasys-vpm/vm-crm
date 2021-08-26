@@ -42,6 +42,7 @@
                             <div class="row">
                                 <!-- [ configuration table ] start -->
                                 <div class="col-sm-12">
+                                    @if(Auth::user()->role_id != '31')
                                     <div class="card">
                                         <div class="card-header">
                                             @include('layouts.alert')
@@ -91,6 +92,7 @@
                                             </form>
                                         </div>
                                     </div>
+                                    @endif
                                     <div class="card">
                                         <div class="card-header">
                                             <h5>Campaign list</h5>
@@ -120,8 +122,10 @@
                                                     <tr>
                                                         <th>Campaign ID</th>
                                                         <th>Name</th>
+                                                        @if(Auth::user()->role_id != '31')
                                                         <th>User(s)</th>
                                                         <th>Start Date</th>
+                                                        @endif
                                                         <th>End Date</th>
                                                         <th>Allocation</th>
                                                         @if(Helper::hasPermission('campaign.edit') || Helper::hasPermission('campaign.show'))
@@ -233,28 +237,42 @@
                             return html;
                         }
                     },
+                        @if(Auth::user()->role_id != '31')
                     {
                         render: function (data, type, row) {
                             var html = '';
                             return row.users.length;
                         }
                     },
-
                     {
                         render: function (data, type, row) {
                             var date = new Date(row.lead_detail.start_date);
                             return (date.getDate() <= 9 ? '0'+date.getDate() : date.getDate())+'/'+monthArray[date.getMonth()]+'/'+date.getFullYear();
                         }
                     },
+                        @endif
+                        @if(Auth::user()->role_id == '34' || Auth::user()->role_id == '31')
+                    {
+                        render: function (data, type, row) {
+                            var date = new Date(row.user.display_date);
+                            return (date.getDate() <= 9 ? '0'+date.getDate() : date.getDate())+'/'+monthArray[date.getMonth()]+'/'+date.getFullYear();
+                        }
+                    },
+                        @else
                     {
                         render: function (data, type, row) {
                             var date = new Date(row.lead_detail.end_date);
                             return (date.getDate() <= 9 ? '0'+date.getDate() : date.getDate())+'/'+monthArray[date.getMonth()]+'/'+date.getFullYear();
                         }
                     },
+                        @endif
                     {
                         render: function (data, type, row) {
-                            return row.user.allocation;
+                            if(row.user == undefined) {
+                                return row.lead_detail.allocation;
+                            } else {
+                                return row.user.allocation;
+                            }
                             if(row.lead_detail.campaign_status == '{{\Modules\Campaign\enum\CampaignStatus::SHORTFALL}}') {
                                 return row.lead_detail.deliver_count+' <span class="text-danger" title="Shortfall Count">('+row.lead_detail.shortfall_count+')</span>'+' / '+row.lead_detail.allocation;
                             } else {
