@@ -203,11 +203,8 @@
                                         <div class="card-header">
                                             <h5>Campaign list</h5>
                                             <div class="card-header-right">
-                                                <div class="btn-group card-option">
-                                                    <a onclick="getModal('{{ array_slice(explode('/', route('modal.campaign.import')), -1, 1)[0] }}')" data-toggle="modal"><button type="button" class="btn btn-primary btn-square btn-sm"><i class="feather icon-upload"></i>Import</button></a>&nbsp;&nbsp;
-                                                    <a href="{{ url('campaign/export') }}"><button type="button" class="btn btn-primary btn-square btn-sm"><i class="feather icon-download"></i>Export</button></a>&nbsp;&nbsp;
-                                                    @if(Helper::hasPermission('campaign.create'))<a href="{{ route('campaign.create') }}"><button type="button" class="btn btn-primary btn-square btn-sm"><i class="feather icon-plus"></i>New Campaign</button></a>@endif
 
+                                                <div class="btn-group card-option">
                                                     <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                         <i class="feather icon-more-vertical"></i>
                                                     </button>
@@ -219,7 +216,27 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="card-block">
+                                        <div class="card-block" style="padding-top: 10px;">
+                                            <div class="row float-right" style="padding-bottom: 5px;">
+                                                <div class="col-md-12">
+
+                                                    <div class="btn-group mb-1 mr-2" style="display: none;">
+                                                        <button class="btn btn-primary btn-square btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="feather icon-upload"></i> Import </button>
+                                                        <div class="dropdown-menu">
+                                                            <a class="dropdown-item" href="#!" onclick="getModal('{{ array_slice(explode('/', route('modal.campaign.import')), -1, 1)[0] }}')" data-toggle="modal">Import Campaigns</a>
+                                                            <a class="dropdown-item" href="#!">Update Campaigns</a>
+                                                        </div>
+                                                    </div>
+
+                                                    <a onclick="getModal('{{ array_slice(explode('/', route('modal.campaign.import')), -1, 1)[0] }}')" data-toggle="modal"><button type="button" class="btn btn-primary btn-square btn-sm"><i class="feather icon-upload"></i>Import</button></a>
+
+                                                    <a href="{{ url('campaign/export') }}"><button type="button" class="btn btn-primary btn-square btn-sm"><i class="feather icon-download"></i>Export</button></a>
+
+                                                    @if(Helper::hasPermission('campaign.create'))<a href="{{ route('campaign.create') }}"><button type="button" class="btn btn-primary btn-square btn-sm"><i class="feather icon-plus"></i>New Campaign</button></a>@endif
+
+
+                                                </div>
+                                            </div>
                                             <div class="table-responsive">
                                                 <table id="table-campaigns" class="display table nowrap table-striped table-hover text-center" style="width: 100%;">
                                                     <thead class="text-center">
@@ -310,7 +327,7 @@
         // [ dark-toolbar ]
         $(function (){
             $("#filter-card-toggle").click(function (){
-                if($(this).children('i').attr('class') == 'feather icon-minus-circle') {
+                if($(this).children('i').attr('class') === 'feather icon-minus') {
                     $(this).children('i').removeClass('icon-minus').addClass('icon-plus');
                 } else {
                     $(this).children('i').removeClass('icon-plus').addClass('icon-minus');
@@ -516,6 +533,7 @@
                 if(files.length > 0 ) {
                     form_data.append('campaign_file',files[0]);
                     form_data.append('specification_file',specification_files[0]);
+                    form_data.append('action',$('input[type=radio][name=import_action]:checked').val());
                     $.ajax({
                         url: url,
                         data: form_data,

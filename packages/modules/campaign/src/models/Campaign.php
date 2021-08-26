@@ -4,6 +4,7 @@
 namespace Modules\Campaign\models;
 
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -41,5 +42,15 @@ class Campaign extends Model
     public function countries()
     {
         return $this->hasMany(CampaignCountry::class, 'campaign_id', 'id');
+    }
+
+    public function users()
+    {
+        return $this->hasMany(CampaignUsers::class, 'campaign_id', 'id');
+    }
+
+    public function user()
+    {
+        return $this->hasOne(CampaignUsers::class, 'campaign_id', 'id');
     }
 }

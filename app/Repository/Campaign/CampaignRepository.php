@@ -66,8 +66,6 @@ class CampaignRepository implements CampaignInterface
             $query->where('status', $filters['status']);
         }
 
-
-
         return $query->get();
     }
 
@@ -199,30 +197,43 @@ class CampaignRepository implements CampaignInterface
             DB::beginTransaction();
             $campaign = $this->find($id);
             $campaignCopy = $campaign->toArray();
-            $campaign->name = $attributes['name'];
-            $campaign->v_mail_campaign_id = $attributes['v_mail_campaign_id'];
-            $campaign->campaign_type_id = $attributes['campaign_type_id'];
-            $campaign->campaign_filter_id = $attributes['campaign_filter_id'];
-            $campaign->note = $attributes['note'];
+            if (isset($attributes['name']) && !empty($attributes['name']))
+                $campaign->name = $attributes['name'];
+
+            if (isset($attributes['v_mail_campaign_id']) && !empty($attributes['v_mail_campaign_id']))
+                $campaign->v_mail_campaign_id = $attributes['v_mail_campaign_id'];
+
+            if(isset($attributes['campaign_type_id']) && !empty($attributes['campaign_type_id']))
+                $campaign->campaign_type_id = $attributes['campaign_type_id'];
+
+            if(isset($attributes['campaign_filter_id']) && !empty($attributes['campaign_filter_id']))
+                $campaign->campaign_filter_id = $attributes['campaign_filter_id'];
+
+            if(isset($attributes['note']) && !empty($attributes['note']))
+                $campaign->note = $attributes['note'];
+
             $campaign->save();
             if($campaign->id) {
-                //Campaign Countries
 
-                $insertCampaignCountries = array();
-                foreach ($attributes['country_id'] as $country) {
-                    array_push($insertCampaignCountries, ['campaign_id' => $campaign->id, 'country_id' => $country]);
-                }
-                $resultCountryList = CampaignCountry::where('campaign_id', $campaign->id)->with('country')->get()->pluck('country.name');
-                CampaignCountry::where('campaign_id', $campaign->id)->delete();
+                if(isset($attributes['country_id']) && !empty($attributes['country_id'])) {
+                    //Campaign Countries
+                    $insertCampaignCountries = array();
+                    foreach ($attributes['country_id'] as $country) {
+                        array_push($insertCampaignCountries, ['campaign_id' => $campaign->id, 'country_id' => $country]);
+                    }
+                    $resultCountryList = CampaignCountry::where('campaign_id', $campaign->id)->with('country')->get()->pluck('country.name');
+                    CampaignCountry::where('campaign_id', $campaign->id)->delete();
 
-                CampaignCountry::insert($insertCampaignCountries);
-                $resultUpdatedCountryList = CampaignCountry::where('campaign_id', $campaign->id)->with('country')->get()->pluck('country.name');
-                if($resultUpdatedCountryList->count() >=  $resultCountryList->count()) {
-                    $resultCountryDiff = $resultUpdatedCountryList->diff($resultCountryList);
-                } else {
-                    $resultCountryDiff = $resultCountryList->diff($resultUpdatedCountryList);
+                    CampaignCountry::insert($insertCampaignCountries);
+                    $resultUpdatedCountryList = CampaignCountry::where('campaign_id', $campaign->id)->with('country')->get()->pluck('country.name');
+                    if($resultUpdatedCountryList->count() >=  $resultCountryList->count()) {
+                        $resultCountryDiff = $resultUpdatedCountryList->diff($resultCountryList);
+                    } else {
+                        $resultCountryDiff = $resultCountryList->diff($resultUpdatedCountryList);
+                    }
+                    //--Campaign Countries
                 }
-                //--Campaign Countries
+
 
                 $response = array('status' => TRUE, 'message' => 'Campaign details updated successfully');
                 //Save History
@@ -263,7 +274,7 @@ class CampaignRepository implements CampaignInterface
             }
         } catch (\Exception $exception) {
             DB::rollBack();
-            //dd($exception->getMessage());
+            dd($exception->getMessage());
             $response = array('status' => FALSE, 'message' => 'Something went wrong, please try again.');
         }
         return $response;
@@ -554,6 +565,84 @@ class CampaignRepository implements CampaignInterface
 
         return $response;
 
+
+    }
+
+    public function validateUpdateCampaignData($data = [])
+    {
+        $validatedData = array();
+        $errorMessage = array();
+        $response = array('status' => FALSE, 'message' => 'Something went wrong, please try again.');
+        $invalidCells = array();
+
+        try {
+            //Validate Campaign Name $data[0]
+            if(!empty(trim($data[1]))) {
+                $campaign = Campaign::whereCampaignId(trim($data[1]))->first();
+                if(!empty($campaign)) {
+                    $validatedData['id'] = $campaign->id;
+                } else {
+                    $errorMessage['Campaign ID'] = 'Campaign id not exists';
+                    $invalidCells[1] = 'Invalid';
+                }
+            } elseif(!empty(trim($data[0]))) {
+                $campaign = Campaign::whereName(trim($data[0]))->first();
+                if(!empty($campaign)) {
+                    $validatedData['id'] = $campaign->id;
+                } else {
+                    $errorMessage['Campaign Name'] = 'Campaign name not exists';
+                    $invalidCells[0] = 'Invalid';
+                }
+            } else {
+                $errorMessage['Campaign Name'] = 'Enter valid campaign name or campaign id';
+                $invalidCells[0] = 'Invalid';
+            }
+
+            //Validate Status $data[2]
+            if(!empty(trim($data[2]))) {
+                $campaignStatus = CampaignStatus::CAMPAIGN_STATUS;
+                if(in_array(ucfirst(trim($data[2])), $campaignStatus)) {
+                    $validatedData['campaign_status'] = array_search(ucfirst(trim($data[2])),$campaignStatus);
+                } else {
+                    $errorMessage['Status'] = 'Enter valid status';
+                    $invalidCells[2] = 'Invalid';
+                }
+            } else {
+                $errorMessage['Status'] = 'Enter valid status';
+                $invalidCells[2] = 'Invalid';
+            }
+
+            //Validate Delivery Count $data[3]
+            if(!empty(trim($data[3]))) {
+                $deliver_count = trim($data[3]);
+                if(is_numeric($deliver_count) && $deliver_count > 0) {
+                    $validatedData['deliver_count'] = $deliver_count;
+                } else {
+                    $errorMessage['Delivery Count'] = 'Enter valid delivery count';
+                    $invalidCells[3] = 'Invalid';
+                }
+            } else {
+                //$validatedData['deliver_count'] = 0;
+                $errorMessage['Delivery Count'] = 'Enter valid delivery count';
+                $invalidCells[3] = 'Invalid';
+            }
+
+            if(empty($errorMessage)) {
+                $response = array('status' => TRUE, 'validatedData' => $validatedData);
+            } else {
+                throw new \Exception('Something went wrong, please try again.', 1);
+            }
+
+        } catch (\Exception $exception) {
+            //dd($exception->getMessage());
+            $response = array(
+                'status' => FALSE,
+                'errorMessage' => $errorMessage,
+                'invalidCells' => $invalidCells
+                );
+        }
+
+        return $response;
 
     }
 

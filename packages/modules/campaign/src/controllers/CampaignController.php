@@ -411,12 +411,12 @@ class CampaignController extends Controller
     public function campaignBulkImport(Request $request)
     {
         $attributes = $request->all();
+        $action = $attributes['action'];
         $fileList = array();
         if($request->hasFile('specification_file')) {
             $zip = Zip::open($request->file('specification_file'));
             $fileList = $zip->listFiles();
         }
-
 
         $excelData = Excel::toArray('', $request->file('campaign_file'));
 
@@ -425,12 +425,18 @@ class CampaignController extends Controller
         $errorMessages = array();
         foreach ($excelData[0] as $key => $row) {
             if($key != 0) {
-                $response = $this->campaignRepository->validateCampaignData($row);
+                if($action == 'import_campaigns') {
+                    $response = $this->campaignRepository->validateCampaignData($row);
+                    $row[5] = date_format(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[5]), 'm/d/Y');
+                    $row[6] = date_format(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[6]), 'm/d/Y');
+                } elseif ($action == 'update_campaigns') {
+                    $response = $this->campaignRepository->validateUpdateCampaignData($row);
+                }
+
                 if($response['status'] == TRUE) {
                     array_push($validatedData, $response['validatedData']);
                 } else {
-                    $row[5] = date_format(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[5]), 'm/d/Y');
-                    $row[6] = date_format(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[6]), 'm/d/Y');
+
                     $tempArray['data'] = $row;
                     $tempArray['invalidCells'] = $response['invalidCells'];
                     $tempArray['errorMessage'] = implode(',', $response['errorMessage']);
@@ -443,8 +449,13 @@ class CampaignController extends Controller
         //Insert validated data
         $importedCampaigns = 0;
         foreach ($validatedData as $index => $attributes) {
+            //dd($attributes);
+            if($action == 'import_campaigns') {
+                $response = $this->campaignRepository->store($attributes);
+            } elseif ($action == 'update_campaigns') {
+                $response = $this->campaignRepository->update($attributes['id'], $attributes);
+            }
 
-            $response = $this->campaignRepository->store($attributes);
 
             if($response['status'] == TRUE) {
                 if(!empty($fileList)) {

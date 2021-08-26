@@ -57,6 +57,19 @@ Route::group(['prefix' => 'campaign', 'middleware' => ['web', 'check.auth'], 'na
         Route::any('/validateName', 'CampaignFilterController@validateName')->name('campaign_filter.validate_name');
     });
 
+    Route::group(['prefix' => 'assign'], function()
+    {
+        Route::any('/getCampaigns', 'CampaignAssignController@getCampaigns')->name('campaign_assign.get_campaigns');
+
+        Route::get('/list', 'CampaignAssignController@index')->name('campaign_assign')->middleware('check.permission');
+        //Route::get('/create', 'CampaignAssignController@create')->name('campaign_assign.create')->middleware('check.permission');
+        Route::post('/store', 'CampaignAssignController@store')->name('campaign_assign.store')->middleware('check.permission:campaign_assign');
+        Route::get('/edit/{id}', 'CampaignAssignController@edit')->name('campaign_assign.edit')->middleware('check.permission');
+        Route::post('/update/{id}', 'CampaignAssignController@update')->name('campaign_assign.update')->middleware('check.permission:campaign_type.edit');
+        Route::any('/destroy/{id}', 'CampaignAssignController@destroy')->name('campaign_assign.destroy')->middleware('check.permission');
+
+    });
+
     //Dummy Routes
     Route::any('/view_sub_allocations', function (){ return redirect()->route('campaign');})->name('campaign.view_sub_allocations');
 

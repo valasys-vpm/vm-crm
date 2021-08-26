@@ -1,9 +1,9 @@
-<div id="get-campaign-import-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLiveLabel" aria-hidden="true">
+<div id="campaign-user-assign-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLiveLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <form id="form-campaign-bulk-import" method="post" action="" enctype="multipart/form-data">
                 @csrf
-                <input type="hidden" id="action-campaign-bulk-import" name="action" value="{{ route('campaign.bulk.import') }}">
+                <input type="hidden" id="action-campaign-bulk-import" name="action" value="{{ route('modal.campaign_user_assign') }}">
 
                 <div class="modal-header">
                     <h5 class="modal-title">Import/Update Campaign(s)</h5>

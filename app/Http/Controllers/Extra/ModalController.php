@@ -17,6 +17,7 @@ class ModalController extends Controller
     public function getModal(Request $request)
     {
         $modal_name = $request->route()->uri();
+        //dd($modal_name);
         return view('extra.modal.'.$modal_name, $this->data);
     }
 }

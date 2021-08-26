@@ -14,4 +14,5 @@ interface CampaignInterface
     public function destroy($id);
 
     public function validateCampaignData($data = []);
+    public function validateUpdateCampaignData($data = []);
 }
