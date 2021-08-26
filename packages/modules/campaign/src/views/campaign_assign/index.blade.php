@@ -361,7 +361,7 @@
                         $("#button-filter-reset").trigger('click');
                         $("#filter-card-toggle").trigger('click');
                         $("#campaign-user-assign-modal").modal('hide');
-                    }
+                        CAMPAIGN_TABLE.ajax.reload();             }
                 });
             });
 
