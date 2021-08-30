@@ -21,6 +21,7 @@ use Modules\Campaign\models\CampaignSpecification;
 use Modules\Campaign\models\CampaignType;
 use Modules\Campaign\models\LeadDetail;
 use Modules\Campaign\models\PacingDetail;
+use Auth;
 
 class CampaignRepository implements CampaignInterface
 {
@@ -71,13 +72,26 @@ class CampaignRepository implements CampaignInterface
 
     public function find($id)
     {
-        return $this->campaign->with([
+        $query = $this->campaign->whereNotNull('id');
+
+        $query->with([
             'leadDetails.pacingDetails',
             'campaignType',
             'campaignFilter',
             'specifications',
             'countries.country.region'
-        ])->findOrFail($id);
+        ]);
+
+        if(Auth::user()->role_id == '34') {
+            $query->with(['user' => function($users){
+                $users->whereUserId(Auth::id());
+            }]);
+            $query->whereHas('user', function ($campaignUsers){
+                $campaignUsers->whereUserId(Auth::id());
+            });
+        }
+
+        return $query->findOrFail($id);
     }
 
     public function store($attributes)

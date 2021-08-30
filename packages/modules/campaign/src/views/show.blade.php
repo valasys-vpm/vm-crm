@@ -199,7 +199,11 @@
                                                                 <td><i class="feather icon-plus-square toggle-pacing-details" style="cursor: pointer;font-size: 17px;"></i></td>
                                                                 @endif
                                                                 <td>{{ date('d-M-Y', strtotime($lead->start_date)) }}</td>
+                                                                @if(Auth::user()->role_id == '34')
+                                                                <td>{{ date('d-M-Y', strtotime($resultCampaign->user->display_date)) }}</td>
+                                                                @else
                                                                 <td>{{ date('d-M-Y', strtotime($lead->end_date)) }}</td>
+                                                                @endif
                                                                 <td>
                                                                     @php
                                                                         $percentage = ($lead->deliver_count/$lead->allocation)*100;

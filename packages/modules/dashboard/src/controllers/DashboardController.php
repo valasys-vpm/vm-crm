@@ -38,6 +38,7 @@ class DashboardController extends Controller
 
     public function index_v3()
     {
+        
         return view('dashboard::index', $this->data);
     }
 
@@ -241,6 +242,14 @@ class DashboardController extends Controller
         foreach ($campaignStatus as $key => $value) {
             $subData = array();
             $campaigns = Campaign::query();
+            if(Auth::user()->role_id == '34') {
+                $campaigns->with(['user' => function($users){
+                    $users->whereUserId(Auth::id());
+                }]);
+                $campaigns->whereHas('user', function ($campaignUsers){
+                    $campaignUsers->whereUserId(Auth::id());
+                });
+            }
             $totalCampaigns = $campaigns->count();
             $campaigns->whereHas('leadDetails', function($leadDetails) use($key, $value, $request) {
                 $leadDetails->whereCampaignStatus($key);
