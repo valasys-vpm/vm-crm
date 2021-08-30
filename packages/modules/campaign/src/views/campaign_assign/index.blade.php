@@ -376,6 +376,7 @@
                 $.each(campaign_list, function (key, value){
                     let display_date = new Date($("#campaign_list_"+value).data('end-date'));
                     let display_date_tl = display_date.getFullYear()+'-'+display_date.getMonth()+'-'+display_date.getDay();
+                    console.log(display_date_tl);
                     display_date.setDate(display_date.getDate() - 2);
                     let d = new Date(display_date);
                     let ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d);
