@@ -46,6 +46,7 @@
                 <div class="main-body">
                     <div class="page-wrapper">
                         <!-- [ Main Content ] start -->
+                        @if(Auth::user()->role_id != '31')
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -192,7 +193,7 @@
                         <div class="row" style="padding: 0px 15px;margin-bottom: 30px;">
 
                             @foreach(\Modules\Campaign\enum\CampaignStatus::CAMPAIGN_STATUS as $key => $status)
-                            
+
                             <div class="col-md-4" style="padding: 4px !important;">
                                 <div class="card card-customer shadow" style="margin-bottom: 2px;">
                                     <div class="card-block" style="padding: 10px 25px !important;">
@@ -210,7 +211,7 @@
                                                     class="feather icon-pause f-20 text-white bg-warning shadow"></i>
                                                 @break
                                                 @case('Cancelled') <i
-                                                    class="feather icon-x f-20 text-white bg-danger shadow"></i> 
+                                                    class="feather icon-x f-20 text-white bg-danger shadow"></i>
                                                 @break
                                                 @case('Delivered') <i
                                                     class="feather icon-check f-20 text-white bg-info shadow"></i>
@@ -265,7 +266,7 @@
                             </div>
                         </div>
                         @if(Auth::user()->role_id != '34')
-                       
+
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -299,7 +300,8 @@
                                 </div>
                             </div>
                         </div>
-                        
+
+                        @endif
                         @endif
                         <!-- [ Main Content ] end -->
                     </div>
