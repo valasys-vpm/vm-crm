@@ -70,7 +70,7 @@
                                                         <select class="form-control btn-square p-1 pl-2 select2-multiple" id="campaign_list" name="campaign_list[]" style="height: unset;" multiple>
                                                             @foreach($resultCampaignsToAssign as $campaign)
 
-                                                                <option id="campaign_list_{{ $campaign->id }}" value="{{ $campaign->id }}" data-name="{{ $campaign->name }}" data-end-date="{{ $campaign->leadDetail->end_date }}" @if(isset($campaign->users[0]) && !empty($campaign->users[0]->allocation)) data-allocation="{{ $campaign->users[0]->allocation }}" data-parent-id="{{ $campaign->users[0]->id }}" @else data-allocation="{{ $campaign->leadDetail->allocation }}" data-parent-id="" @endif>{{ $campaign->campaign_id.' - '.$campaign->name }}</option>
+                                                                <option id="campaign_list_{{ $campaign->id }}" value="{{ $campaign->id }}" data-name="{{ $campaign->name }}"  @if(isset($campaign->users[0]) && !empty($campaign->users[0]->allocation)) data-end-date="{{ $campaign->users[0]->display_date }}" data-allocation="{{ $campaign->users[0]->allocation }}" data-parent-id="{{ $campaign->users[0]->id }}" @else data-end-date="{{ $campaign->leadDetail->end_date }}" data-allocation="{{ $campaign->leadDetail->allocation }}" data-parent-id="" @endif>{{ $campaign->campaign_id.' - '.$campaign->name }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -408,15 +408,21 @@
                         '                                            <div class="col-md-6"><h6 class="card-title">Allocation</h6></div>' +
                         '                                            <div class="col-md-6"><h6 class="card-title">: '+$("#campaign_list_"+value).data('allocation')+'</h6></div>' +
                         '                                        </div>' +
+                        @if(Auth::user()->role_id == '34')
+                        '                                        <div class="row">' +
+                        '                                            <div class="col-md-6"><h6 class="card-title">End Date</h6></div>' +
+                        '                                            <div class="col-md-6"><h6 class="card-title">: '+$("#campaign_list_"+value).data('end-date')+'</h6></div>' +
+                        '                                        </div>' +
+                        @else
                         '                                        <div class="row">' +
                         '                                            <div class="col-md-6"><h6 class="card-title">End Date</h6></div>' +
                         '                                            <div class="col-md-6"><h6 class="card-title">: '+$("#campaign_list_"+value).data('end-date')+'</h6></div>' +
                         '                                        </div>' +
                         '                                        <div class="row">' +
-
                         '                                            <div class="col-md-6"><h6 class="card-title">Display Date</h6></div>' +
                         '                                            <div class="col-md-6"><h6 class="card-title">: <input type="date" name="data['+key+'][display_date]" placeholder="DD/MMM/YYY" value="'+tempDate+'"> </h6></div>' +
                         '                                        </div>' +
+                        @endif
                         '                                    </div>' +
                         '                                    <div class="col-md-7 border-left">' +
                         '                                        <h5 class="card-title mb-2">User(s) to Assign</h5>' +

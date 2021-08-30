@@ -34,7 +34,11 @@
                     } else {
                         $icon = '';
                     }
-                    echo '<li class="nav-item '.$active.'"><a href="'.route($module->route).'" class="nav-link">'.$icon.'<span class="pcoded-mtext">'.ucfirst($module->name).'</span></a></li>';
+                    if($module->slug == 'campaign_management_list' && (Auth::user()->role_id == '34' || Auth::user()->role_id == '31')) {
+
+                    } else {
+                        echo '<li class="nav-item '.$active.'"><a href="'.route($module->route).'" class="nav-link">'.$icon.'<span class="pcoded-mtext">'.ucfirst($module->name).'</span></a></li>';
+                    }
                 }
             }
 

@@ -28,6 +28,12 @@ class CampaignAssignRepository implements CampaignAssignInterface
         });
 
         if(Auth::user()->role_id == '34') {
+            $query->with(['user' => function($users) use ($filters){
+                $users->whereUserId(Auth::id());
+            }]);
+            $query->whereHas('user', function ($campaignUsers) use ($filters){
+                $campaignUsers->whereUserId(Auth::id());
+            });
             $query->with(['users' => function($users) use ($filters){
                 $users->whereUserId(Auth::id());
             }]);
