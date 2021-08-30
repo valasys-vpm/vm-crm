@@ -375,6 +375,7 @@
 
                 $.each(campaign_list, function (key, value){
                     let display_date = new Date($("#campaign_list_"+value).data('end-date'));
+                    let display_date_tl = display_date.getFullYear()+'-'+display_date.getMonth()+'-'+display_date.getDate();
                     display_date.setDate(display_date.getDate() - 2);
                     let d = new Date(display_date);
                     let ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d);
@@ -411,7 +412,7 @@
                         @if(Auth::user()->role_id == '34')
                         '                                        <div class="row">' +
                         '                                            <div class="col-md-6"><h6 class="card-title">End Date</h6></div>' +
-                        '                                            <div class="col-md-6"><h6 class="card-title">: '+$("#campaign_list_"+value).data('end-date')+'</h6></div>' +
+                        '                                            <div class="col-md-6"><h6 class="card-title">: '+$("#campaign_list_"+value).data('end-date')+'<input type="date" name="data['+key+'][display_date]" placeholder="DD/MMM/YYY" value="'+display_date_tl+'"></h6></div>' +
                         '                                        </div>' +
                         @else
                         '                                        <div class="row">' +
