@@ -17,7 +17,12 @@
         </ul>
         <ul class="navbar-nav ml-auto">
             <li>
+                <h6 id="internetspeed" class="text-secondary"></h6>
+            </li>
+            <li>
                 <div class="dropdown drp-user">
+                    
+
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="icon feather icon-settings"></i>
                     </a>
