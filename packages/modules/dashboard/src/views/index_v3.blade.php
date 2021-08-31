@@ -48,7 +48,7 @@
                     <div class="page-wrapper">
                         <!-- [ Main Content ] start -->
                         @if(Auth::user()->role_id != '31')
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-header">
@@ -189,7 +189,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <div class="row" style="padding: 0px 15px;margin-bottom: 30px;">
 
