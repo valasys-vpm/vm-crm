@@ -20,7 +20,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['web', 'check.auth'], 'namesp
     Route::any('/user-logout-force/{id}', 'UserController@userLogoutForce')->name('user.logout.force');
 });
 
-Route::group(['middleware' => ['web', 'check.auth'], 'namespace' => 'Modules\User\Controllers'], function()
+Route::group(['middleware' => ['web', 'check.auth'], 'namespace' => 'Modules\User\controllers'], function()
 {
     Route::get('/my-profile', 'UserController@profile')->name('user.profile');
 });
